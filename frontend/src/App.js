@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { batch, useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
-import { setAuthLoading, setAuthState, setUser } from './store/actions/authActions';
+import { setAuthLoading, setUser } from './store/actions/authActions';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -9,24 +9,17 @@ const App = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      //dispatch(setUser({ username: 'Pesho' }));
-      //dispatch(setAuthLoading(false));
-      //causes prerender
-      dispatch(
-        setAuthState({
-          isAuthLoading: false,
-          user: { username: 'Pesho' },
-        })
-      );
+      batch(() => {
+        dispatch(setAuthLoading(false));
+        dispatch(setUser({ username: 'Pesho' }));
+      });
     }, 5000);
   }, [dispatch]);
 
   return (
     <BrowserRouter>
       <main>
-        <section className="glass">
-          {isAuthLoading ? <div>Loading</div> : <div>{user.username}</div>}
-        </section>
+        <section className="glass">{isAuthLoading ? <div>Loading</div> : <div>{user.username}</div>}</section>
       </main>
     </BrowserRouter>
   );

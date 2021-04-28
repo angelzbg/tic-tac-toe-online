@@ -3,8 +3,16 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { Provider } from 'react-redux';
+import { Provider, batch } from 'react-redux';
 import store from './store';
+import { setAuthLoading, setUser } from './store/actions/authActions';
+
+/*setTimeout(() => {
+  batch(() => {
+    store.dispatch(setAuthLoading(false));
+    store.dispatch(setUser({ username: 'Pesho' }));
+  });
+}, 5000);*/
 
 ReactDOM.render(
   <React.StrictMode>
