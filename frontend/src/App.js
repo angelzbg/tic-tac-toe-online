@@ -1,25 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
+import { setAuthLoading, setAuthState, setUser } from './store/actions/authActions';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => {
+  const dispatch = useDispatch();
+  const { user, isAuthLoading } = useSelector((store) => store.auth);
+
+  useEffect(() => {
+    setTimeout(() => {
+      //dispatch(setUser({ username: 'Pesho' }));
+      //dispatch(setAuthLoading(false));
+      //causes prerender
+      dispatch(
+        setAuthState({
+          isAuthLoading: false,
+          user: { username: 'Pesho' },
+        })
+      );
+    }, 5000);
+  }, [dispatch]);
+
+  return <BrowserRouter>{isAuthLoading ? <div>Loading</div> : <div>{user.username}</div>}</BrowserRouter>;
+};
 
 export default App;
