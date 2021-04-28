@@ -45,6 +45,7 @@ app.use((req, _, next) => {
 
 // ------------- Services [ START ]
 
+// Auth services ------------- [ START ]
 const sign = (res, username) => {
   const token = jwt.sign({ username }, SECRET /*, { expiresIn: '1h' }*/);
   res.cookie('token', token, { httpOnly: true, ...(process.env.SECRET ? { secure: true } : {}) });
@@ -73,7 +74,6 @@ app.post('/api/register', async (req, res) => {
   }
 
   let { username, password, avatar } = req.body;
-  avatar = parseInt(avatar);
 
   const found = await User.findOne({ username });
   if (found) {
@@ -89,7 +89,7 @@ app.post('/api/register', async (req, res) => {
     socketId: uniqid() + uniqid() + uniqid(),
   });
 
-  user.save((err, doc) => {
+  user.save((err) => {
     if (err) {
       res.status(200).json(respond(NETWORK_CODES_TYPES.ERROR, NETWORK_CODES.UNEXPECTED_ERROR));
       return;
@@ -129,7 +129,7 @@ app.post('/api/login', (req, res) => {
         return;
       }
 
-      sign(res, user.username);
+      sign(res, username);
     });
   });
 });
@@ -175,6 +175,23 @@ app.post('/api/updateUser', async (req, res) => {
   res.status(200).json(respond(NETWORK_CODES_TYPES.ERROR, NETWORK_CODES.UNEXPECTED_ERROR));
   return;
 });
+// Auth services ------------- [  END  ]
+
+// Ranking services ------------- [ START ]
+app.post('/api/ranking', async (req, res) => {
+  let { skip } = req.body;
+  if (typeof skip !== 'number' || skip < 0) {
+    res.status(200).json(respond(NETWORK_CODES_TYPES.ERROR, NETWORK_CODES.INVALID_SKIP_PARAM));
+    return;
+  }
+
+  skip = parseInt(skip);
+  const selected = ['_id', 'username', 'avatar', 'created', 'wins', 'losses', 'rate'];
+  const result = await User.find({}, selected, { skip, sort: { rate: -1, wins: -1 }, limit: 25 });
+
+  res.status(200).json(respond(NETWORK_CODES_TYPES.SUCCESS, result || []));
+});
+// Ranking services ------------- [  END  ]
 
 // ------------- Services [  END  ]
 
