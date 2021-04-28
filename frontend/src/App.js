@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { setAuthLoading, setAuthState, setUser } from './store/actions/authActions';
-import Main from './components/Main/Main';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -20,11 +19,15 @@ const App = () => {
         })
       );
     }, 5000);
-  }, [dispatch]); 
+  }, [dispatch]);
 
   return (
     <BrowserRouter>
-      <Main>{isAuthLoading ? <div>Loading</div> : <div>{user.username}</div>}</Main>
+      <main>
+        <section className="glass">
+          {isAuthLoading ? <div>Loading</div> : <div>{user.username}</div>}
+        </section>
+      </main>
     </BrowserRouter>
   );
 };
