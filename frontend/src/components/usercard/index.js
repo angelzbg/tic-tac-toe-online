@@ -54,7 +54,7 @@ const UserCard = () => {
               {user.losses}
             </div>
             <div className="profile-rate" tooltip="Winrate">
-              <div className="rate-indicator" style={{ width: `calc(${percentage} + 0.1rem)` }}>
+              <div className="rate-indicator" style={{ width: `calc(${percentage} + 1.6px)` }}>
                 {percentage}
               </div>
             </div>

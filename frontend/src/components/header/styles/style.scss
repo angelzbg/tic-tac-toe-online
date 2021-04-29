@@ -1,0 +1,18 @@
+$base-color: #426696;
+
+.header {
+  margin-top: 2rem;
+
+  .header-title {
+    color: $base-color;
+    font-weight: 700;
+  }
+
+  .header-underline {
+    width: 15rem;
+    height: 1.3rem;
+    border-radius: 1rem;
+    margin-top: 0.3rem;
+    background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
+  }
+}
