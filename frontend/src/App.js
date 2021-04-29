@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { batch, useDispatch, useSelector } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 import { setAuthLoading, setUser } from './store/actions/authActions';
-import UserCard from "./components/usercard";
-import Navigation from "./components/navigation";
+import UserCard from './components/usercard';
+import Navigation from './components/navigation';
+import Header from './components/header';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -22,18 +23,13 @@ const App = () => {
     <BrowserRouter>
       <div className="app-wrapper">
         <div className="glass">
-            {/*lqva                dqsna*/}
-            {/*usercard            header*/}
-            {/*nav                 switch*/}
-            <div  className="app-left-side">
-                <UserCard></UserCard>
-                <Navigation></Navigation>
-                {/* Navigation */}
-            </div>
-            <div className="app-right-side">
-                {/* Header */}
-                {/* Switch */}
-            </div>
+          <div className="app-left-side">
+            <UserCard />
+            <Navigation />
+          </div>
+          <div className="app-right-side">
+            <Route path="/:route?" component={Header} />
+          </div>
         </div>
       </div>
     </BrowserRouter>
