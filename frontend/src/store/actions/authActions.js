@@ -9,3 +9,8 @@ export const setAuthLoading = (payload) => ({
   type: ACTION_TYPES.SET_AUTH_LOADING,
   payload,
 });
+
+export const setAuthLogged = (payload) => ({
+  type: ACTION_TYPES.SET_AUTH_LOGGED,
+  payload,
+});

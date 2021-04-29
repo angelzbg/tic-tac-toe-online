@@ -1,18 +1,99 @@
 .user-card {
-  //border: 1px solid black;
   border-top-right-radius: 1.2rem;
   border-top-left-radius: 1.2rem;
   text-align: center;
+  position: relative;
 
-  p {
-    color: #426696;
-    font-size: 0.8em;
-  }
-
-  .avatar {
-    width: 3.3rem;
-    height: 3.3rem;
+  .profile-avatar {
+    width: 3.95rem;
+    height: 3.95rem;
     border-radius: 50%;
     margin-top: 2rem;
+    display: inline-block;
+    border: 0.15rem solid rgba(119, 189, 255, 0.5);
+    position: relative;
+    img {
+      border-radius: 50%;
+      width: 3.7rem;
+      height: 3.7rem;
+    }
+
+    .profile-settings-menu {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      .profile-settings-button {
+        cursor: pointer;
+        text-align: left;
+        box-shadow: 10px 0 20px -20px #888;
+        background: #426696;
+        border-radius: 50%;
+        width: 1.2rem;
+        height: 1.2rem;
+        color: #daf9ff;
+        svg {
+          margin-bottom: 0.3rem;
+          margin-left: 0.2rem;
+          width: 0.8rem;
+          height: 0.8rem;
+        }
+      }
+    }
+  }
+
+  .profile-username {
+    color: #2c2c2c;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
+  .profile-score {
+    font-size: 1rem;
+    cursor: default;
+    margin-top: 0.2rem;
+    width: max-content;
+    display: inline-block;
+
+    .profile-wins,
+    .profile-losses {
+      border-radius: 1rem;
+      padding: 0.1rem 0.5rem 0.1rem 0.3rem;
+      color: #242424;
+      svg {
+        margin-bottom: 0.11rem;
+      }
+    }
+
+    .profile-wins {
+      display: inline-block;
+      background: #09dd73;
+    }
+
+    .profile-losses {
+      margin-left: 0.25rem;
+      display: inline-block;
+      background: #f8183d;
+    }
+
+    .profile-rate {
+      font-size: 0.65rem;
+      margin-top: 0.25rem;
+      background: #f8183d;
+      width: 100%;
+      height: 1rem;
+      border-radius: 0.5rem;
+      border: 0.1rem solid #222222;
+      display: inline-block;
+      .rate-indicator {
+        text-align: right;
+        padding-right: 0.1rem;
+        margin-left: -0.05rem;
+        height: 0.85rem;
+        border-radius: 0.4rem;
+        background: #09dd73;
+        min-width: 1rem;
+        font-weight: bold;
+      }
+    }
   }
 }

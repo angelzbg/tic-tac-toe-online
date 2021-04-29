@@ -1,14 +1,13 @@
-import './styles/style.css'
-import {NavLink} from "react-router-dom";
+import './styles/style.css';
+import { Link } from 'react-router-dom';
 
 const Navigation = () => {
-    return (
-        <div className="navigation">
-            <NavLink to="/games">Games</NavLink>
-            <NavLink to="/">Rankings</NavLink>
-            <NavLink to="/games">Games</NavLink>
-        </div>
-    )
-}
+  return (
+    <div className="navigation">
+      <Link to="/">Games</Link>
+      <Link to="/ranking">Ranking</Link>
+    </div>
+  );
+};
 
-export default Navigation
+export default Navigation;
