@@ -1,0 +1,17 @@
+.user-card {
+  border-top-right-radius: 1.2rem;
+  border-top-left-radius: 1.2rem;
+  text-align: center;
+}
+.user-card p {
+  color: #426696;
+  font-size: 0.8em;
+}
+.user-card .avatar {
+  width: 3.3rem;
+  height: 3.3rem;
+  border-radius: 50%;
+  margin-top: 2rem;
+}
+
+/*# sourceMappingURL=style.css.map */
