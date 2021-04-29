@@ -5,6 +5,7 @@ import { setAuthLoading, setUser } from './store/actions/authActions';
 import UserCard from './components/usercard';
 import Navigation from './components/navigation';
 import Header from './components/header';
+import Container from "./components/container";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ const App = () => {
           </div>
           <div className="app-right-side">
             <Route path="/:route?" component={Header} />
+            <Container/>
           </div>
         </div>
       </div>
