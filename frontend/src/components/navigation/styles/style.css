@@ -4,6 +4,7 @@
   float: left;
   margin: 0 4.5rem;
 }
+
 .navigation a {
   display: block;
   margin: 2rem 0;
@@ -13,8 +14,8 @@
   font-size: 1.5rem;
   text-align: left;
 }
+
 .navigation a svg {
   margin-bottom: 3px;
 }
-
 /*# sourceMappingURL=style.css.map */

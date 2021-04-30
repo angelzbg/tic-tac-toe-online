@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { batch, useDispatch, useSelector } from 'react-redux';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { setAuthLoading, setUser } from './store/actions/authActions';
 import UserCard from './components/usercard';
 import Navigation from './components/navigation';
@@ -38,6 +38,7 @@ const App = () => {
               <Route exact path="/login" component={Login} />
               <Route exact path="/register" component={Register} />
               <Route exact path="/ranking" component={Ranking} />
+              <Route path="*" component={() => <Redirect to="/" />} />
             </Switch>
           </div>
         </div>

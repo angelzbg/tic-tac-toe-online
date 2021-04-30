@@ -5,6 +5,11 @@ export const setUser = (payload) => ({
   payload,
 });
 
+export const setUserAvatar = (payload) => ({
+  type: ACTION_TYPES.SET_USER_AVATAR,
+  payload,
+});
+
 export const setAuthLoading = (payload) => ({
   type: ACTION_TYPES.SET_AUTH_LOADING,
   payload,

@@ -81,3 +81,12 @@ code {
   transform: translate(-50%, -100%);
   font-size: 1rem;
 }
+
+@keyframes opacity-keyframe {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
