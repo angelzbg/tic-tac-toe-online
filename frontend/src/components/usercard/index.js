@@ -4,6 +4,7 @@ import avatar from '../../images/avatars/profile-picture.png';
 import { batch, useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { setAuthLoading, setAuthLogged, setUser } from '../../store/actions/authActions';
+import {Link} from 'react-router-dom'
 
 const UserCard = () => {
   const { user, isLogged } = useSelector((store) => store.auth);
@@ -23,7 +24,7 @@ const UserCard = () => {
             socketId: 'someuuid',
           })
         );
-        dispatch(setAuthLogged(true));
+        dispatch(setAuthLogged(false));
         dispatch(setAuthLoading(false));
       });
     }, 1000);
@@ -61,7 +62,10 @@ const UserCard = () => {
           </div>
         </>
       ) : (
-        <></>
+        <div className="login-register">
+            <Link to="/login">Login </Link>
+            <Link to="/register"> Register</Link>
+        </div>
       )}
     </div>
   );

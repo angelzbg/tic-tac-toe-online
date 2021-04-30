@@ -91,5 +91,11 @@
   min-width: 16px;
   font-weight: bold;
 }
+.user-card .login-register a {
+  text-decoration: none;
+  font-size: 1.1rem;
+  color: #426696;
+  font-weight: 600;
+}
 
 /*# sourceMappingURL=style.css.map */

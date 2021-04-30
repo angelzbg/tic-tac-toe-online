@@ -5,7 +5,7 @@ import { RocketIcon, StarIcon } from "@primer/octicons-react";
 const Navigation = () => {
   return (
     <div className="navigation">
-      <NavLink to="/">
+      <NavLink to="/active-games">
         <RocketIcon size={22} /> Games
       </NavLink>
       <NavLink to="/ranking">
