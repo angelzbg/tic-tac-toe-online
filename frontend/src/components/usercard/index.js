@@ -4,7 +4,7 @@ import avatar from '../../images/avatars/profile-picture.png';
 import { batch, useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { setAuthLoading, setAuthLogged, setUser } from '../../store/actions/authActions';
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
 const UserCard = () => {
   const { user, isLogged } = useSelector((store) => store.auth);
@@ -36,11 +36,13 @@ const UserCard = () => {
     <div className="user-card">
       <div className="profile-avatar">
         <img src={avatar} alt="avatar" />
-        <div className="profile-settings-menu">
-          <div className="profile-settings-button" tooltip={true ? 'Open Settings' : 'Close Settings'}>
-            <GearIcon />
+        {isLogged && (
+          <div className="profile-settings-menu">
+            <div className="profile-settings-button" tooltip={true ? 'Open Settings' : 'Close Settings'}>
+              <GearIcon />
+            </div>
           </div>
-        </div>
+        )}
       </div>
       {isLogged ? (
         <>
@@ -63,8 +65,8 @@ const UserCard = () => {
         </>
       ) : (
         <div className="login-register">
-            <Link to="/login">Login </Link>
-            <Link to="/register"> Register</Link>
+          <Link to="/login">Login </Link>
+          <Link to="/register"> Register</Link>
         </div>
       )}
     </div>

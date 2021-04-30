@@ -1,7 +1,7 @@
-import "./styles/style.css";
-import GameCard from "../gameCard";
+import GameCard from './gamecard';
+import './styles/style.css';
 
-const Container = () => {
+const ActiveGames = () => {
   return (
     <div className="container scroll-h">
       <GameCard />
@@ -12,4 +12,4 @@ const Container = () => {
   );
 };
 
-export default Container;
+export default ActiveGames;
