@@ -1,13 +1,15 @@
 import './styles/style.css';
 import { ArrowUpIcon, ArrowDownIcon, GearIcon } from '@primer/octicons-react';
-import avatar from '../../images/avatars/profile-picture.png';
 import { batch, useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { setAuthLoading, setAuthLogged, setUser } from '../../store/actions/authActions';
 import { Link } from 'react-router-dom';
+import { avatars } from '../../utils/constants';
+import UserMenu from './UserMenu';
 
 const UserCard = () => {
   const { user, isLogged } = useSelector((store) => store.auth);
+  const [isMenuOpen, setMenuOpen] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -16,7 +18,7 @@ const UserCard = () => {
         dispatch(
           setUser({
             username: 'Pesho',
-            avatar: 0,
+            avatar: 1,
             created: new Date().getTime(),
             wins: 100,
             losses: 30,
@@ -24,8 +26,8 @@ const UserCard = () => {
             socketId: 'someuuid',
           })
         );
-        dispatch(setAuthLogged(false));
-        dispatch(setAuthLoading(false));
+        dispatch(setAuthLogged(true));
+        dispatch(setAuthLoading(true));
       });
     }, 1000);
   }, [dispatch]);
@@ -35,12 +37,18 @@ const UserCard = () => {
   return (
     <div className="user-card">
       <div className="profile-avatar">
-        <img src={avatar} alt="avatar" />
+        <img src={avatars[user?.avatar] || avatars[0]} alt="avatar" />
         {isLogged && (
           <div className="profile-settings-menu">
-            <div className="profile-settings-button" tooltip={true ? 'Open Settings' : 'Close Settings'}>
-              <GearIcon />
+            <div
+              id="user-menu-toggle"
+              className="profile-settings-button"
+              onClick={() => setMenuOpen(!isMenuOpen)}
+              tooltip={!isMenuOpen ? 'Open settings' : 'Close settings'}
+            >
+              <GearIcon size="medium" />
             </div>
+            {isMenuOpen && <UserMenu {...{ setMenuOpen }} />}
           </div>
         )}
       </div>

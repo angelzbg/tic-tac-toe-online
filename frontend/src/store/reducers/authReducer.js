@@ -10,10 +10,12 @@ const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case ACTION_TYPES.SET_AUTH_LOADING:
       return { ...state, isAuthLoading: action.payload };
-    case ACTION_TYPES.SET_USER:
-      return { ...state, user: action.payload };
     case ACTION_TYPES.SET_AUTH_LOGGED:
       return { ...state, isLogged: action.payload };
+    case ACTION_TYPES.SET_USER:
+      return { ...state, user: action.payload };
+    case ACTION_TYPES.SET_USER_AVATAR:
+      return { ...state, user: { ...state.user, avatar: action.payload } };
     default:
       return state;
   }

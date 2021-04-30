@@ -30,7 +30,7 @@ app.use((req, _, next) => {
     return;
   }
 
-  jwt.verify(token, secret, async (err, decoded) => {
+  jwt.verify(token, SECRET, async (err, decoded) => {
     if (err) {
       next(/*err*/);
       return;
@@ -140,7 +140,7 @@ app.get('/api/logout', (_, res) => {
   res.status(200).json(respond(NETWORK_CODES_TYPES.SUCCESS, NETWORK_CODES.LOGOUT_SUCCESSFUL));
 });
 
-app.get('/api/userInfo', (req, res) => {
+app.get('/api/user-info', (req, res) => {
   if (req.user) {
     const { _id, username, avatar, created, wins, losses, rate, socketId } = req.user;
     res
@@ -152,7 +152,7 @@ app.get('/api/userInfo', (req, res) => {
   res.status(200).json(respond(NETWORK_CODES_TYPES.ERROR, NETWORK_CODES.GET_USER_INFO_FAIL));
 });
 
-app.post('/api/updateUser', async (req, res) => {
+app.post('/api/update-user', async (req, res) => {
   if (!req.user) {
     res.status(200).json(respond(NETWORK_CODES_TYPES.ERROR, NETWORK_CODES.INVALID_PERMISSIONS));
     return;
