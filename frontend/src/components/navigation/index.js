@@ -1,5 +1,6 @@
 import './styles/style.css';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import {RocketIcon, StarIcon} from "@primer/octicons-react";
 
 const Navigation = () => {
   return (
