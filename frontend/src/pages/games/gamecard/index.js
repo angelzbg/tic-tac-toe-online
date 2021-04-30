@@ -1,4 +1,4 @@
-import "./styles/style.css";
+import './styles/style.css';
 
 const GameCard = () => {
   return <div className="game-card"></div>;

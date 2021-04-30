@@ -1,17 +1,37 @@
-import './styles/style.css'
+import { useEffect } from 'react';
+import './styles/style.css';
+
+const headers = {
+  default: {
+    title: 'Tic Tac Toe',
+  },
+  ranking: {
+    title: 'Players Ranking',
+  },
+  login: {
+    title: 'Login',
+  },
+  register: {
+    title: 'Register',
+  },
+};
 
 const Header = ({
   match: {
     params: { route },
   },
 }) => {
-  return (
-      <div className="header">
-        <h1 className="header-title">Active Games</h1>
-          <div className="header-underline">
+  const { title } = headers[route] || headers.default;
 
-          </div>
-      </div>
+  useEffect(() => {
+    document.title = `3xT - ${title}`;
+  }, [title]);
+
+  return (
+    <div className="header">
+      <h1 className="header-title">{title}</h1>
+      <div className="header-underline"></div>
+    </div>
   );
 };
 
