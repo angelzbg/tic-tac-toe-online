@@ -5,7 +5,8 @@ import { setAuthLoading, setUser } from './store/actions/authActions';
 import UserCard from './components/usercard';
 import Navigation from './components/navigation';
 import Header from './components/header';
-import Container from "./components/container";
+import ActiveGames from "./components/activeGames";
+import AuthForm from "./components/authForm";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -30,7 +31,8 @@ const App = () => {
           </div>
           <div className="app-right-side">
             <Route path="/:route?" component={Header} />
-            <Container/>
+            <Route exact path="/login" component={AuthForm} />
+            <Route exact path="/active-games" component={ActiveGames} />
           </div>
         </div>
       </div>
