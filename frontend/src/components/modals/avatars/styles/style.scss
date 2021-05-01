@@ -4,7 +4,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 2;
+  z-index: 9999;
   background-color: rgba(59, 89, 152, 0.2);
   backdrop-filter: blur(2px);
   animation: opacity-keyframe 0.1s ease-out;
