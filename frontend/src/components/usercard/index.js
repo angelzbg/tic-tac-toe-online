@@ -1,8 +1,7 @@
 import './styles/style.css';
 import { ArrowUpIcon, ArrowDownIcon, GearIcon } from '@primer/octicons-react';
-import { batch, useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import { setAuthLoading, setAuthLogged, setUser } from '../../store/actions/authActions';
+import { useSelector } from 'react-redux';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { avatars } from '../../utils/constants';
 import UserMenu from './UserMenu';
@@ -10,28 +9,6 @@ import UserMenu from './UserMenu';
 const UserCard = () => {
   const { user, isLogged } = useSelector((store) => store.auth);
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const dispatch = useDispatch();
-
-  /*useEffect(() => {
-    setTimeout(() => {
-      batch(() => {
-        dispatch(
-          setUser({
-            username: 'Pesho',
-            avatar: 1,
-            created: new Date().getTime(),
-            wins: 100,
-            losses: 30,
-            rate: 76.92,
-            socketId: 'someuuid',
-          })
-        );
-        dispatch(setAuthLogged(true));
-        dispatch(setAuthLoading(true));
-      });
-    }, 1000);
-  }, [dispatch]);*/
-
   const percentage = `${user?.rate || 0}%`;
 
   return (
@@ -74,7 +51,7 @@ const UserCard = () => {
       ) : (
         <div className="login-register">
           <Link to="/login">Login </Link>
-          <Link to="/register"> Register</Link>
+          <Link to="/register">Register</Link>
         </div>
       )}
     </div>

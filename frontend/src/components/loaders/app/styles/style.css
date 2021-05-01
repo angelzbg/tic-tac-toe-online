@@ -1,0 +1,60 @@
+.app-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+  background-color: rgba(59, 89, 152, 0.2);
+  -webkit-backdrop-filter: blur(2px);
+          backdrop-filter: blur(2px);
+  -webkit-animation: opacity-keyframe 0.1s ease-out;
+          animation: opacity-keyframe 0.1s ease-out;
+}
+
+.app-loader svg {
+  width: 20vmin;
+  height: 20vmin;
+  position: absolute;
+  top: calc((100vh - 20vmin) / 2);
+  left: calc((100vw - 20vmin) / 2);
+  -webkit-animation: app-loader-rotation 2.3s infinite linear;
+          animation: app-loader-rotation 2.3s infinite linear;
+}
+
+@-webkit-keyframes app-loader-rotation {
+  0% {
+    -webkit-transform: rotate(359deg) scale(1);
+            transform: rotate(359deg) scale(1);
+    color: #38baee;
+  }
+  50% {
+    -webkit-transform: rotate(180deg) scale(1.2);
+            transform: rotate(180deg) scale(1.2);
+    color: #14aae6;
+  }
+  100% {
+    -webkit-transform: rotate(0deg) scale(1);
+            transform: rotate(0deg) scale(1);
+    color: #38baee;
+  }
+}
+
+@keyframes app-loader-rotation {
+  0% {
+    -webkit-transform: rotate(359deg) scale(1);
+            transform: rotate(359deg) scale(1);
+    color: #38baee;
+  }
+  50% {
+    -webkit-transform: rotate(180deg) scale(1.2);
+            transform: rotate(180deg) scale(1.2);
+    color: #14aae6;
+  }
+  100% {
+    -webkit-transform: rotate(0deg) scale(1);
+            transform: rotate(0deg) scale(1);
+    color: #38baee;
+  }
+}
+/*# sourceMappingURL=style.css.map */

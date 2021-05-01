@@ -1,7 +1,5 @@
-import { useEffect } from 'react';
-import { batch, useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
-import { setAuthLoading, setUser } from './store/actions/authActions';
 import UserCard from './components/usercard';
 import Navigation from './components/navigation';
 import Header from './components/header';
@@ -9,19 +7,10 @@ import ActiveGames from './pages/games';
 import Login from './pages/auth/login';
 import Register from './pages/auth/register';
 import Ranking from './pages/ranking';
+import AppLoader from './components/loaders/app';
 
 const App = () => {
-  const dispatch = useDispatch();
-  const { user, isAuthLoading } = useSelector((store) => store.auth);
-
-  /*useEffect(() => {
-    setTimeout(() => {
-      batch(() => {
-        dispatch(setAuthLoading(false));
-        dispatch(setUser({ username: 'Pesho' }));
-      });
-    }, 5000);
-  }, [dispatch]);*/
+  const { isAuthLoading } = useSelector((store) => store.auth);
 
   return (
     <BrowserRouter>
@@ -42,6 +31,7 @@ const App = () => {
             </Switch>
           </div>
         </div>
+        {isAuthLoading && <AppLoader />}
       </div>
     </BrowserRouter>
   );
