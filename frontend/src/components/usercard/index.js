@@ -12,7 +12,7 @@ const UserCard = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const dispatch = useDispatch();
 
-  useEffect(() => {
+  /*useEffect(() => {
     setTimeout(() => {
       batch(() => {
         dispatch(
@@ -30,7 +30,7 @@ const UserCard = () => {
         dispatch(setAuthLoading(true));
       });
     }, 1000);
-  }, [dispatch]);
+  }, [dispatch]);*/
 
   const percentage = `${user?.rate || 0}%`;
 

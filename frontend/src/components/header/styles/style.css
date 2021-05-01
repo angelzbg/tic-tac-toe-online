@@ -1,18 +1,16 @@
 .header {
   margin-top: 2rem;
 }
-
 .header .header-title {
   color: #426696;
   font-weight: 700;
 }
-
 .header .header-underline {
   width: 15rem;
   height: 1.3rem;
   border-radius: 1rem;
   margin-top: 0.3rem;
-  background: -webkit-gradient(linear, left top, right bottom, from(rgba(255, 255, 255, 0.7)), to(rgba(255, 255, 255, 0.3)));
   background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
 }
+
 /*# sourceMappingURL=style.css.map */

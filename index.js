@@ -68,6 +68,8 @@ const validateRegisterData = ({ username, password, avatar = 0 } = {}) => {
 };
 
 app.post('/api/register', async (req, res) => {
+  res.status(200).json(respond(NETWORK_CODES_TYPES.ERROR, NETWORK_CODES.USERNAME_ALREADY_TAKEN));
+  return;
   const validationError = validateRegisterData(req.body);
   if (validationError) {
     res.status(200).json(respond(NETWORK_CODES_TYPES.ERROR, validationError));

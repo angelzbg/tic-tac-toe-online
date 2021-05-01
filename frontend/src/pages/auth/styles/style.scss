@@ -1,0 +1,85 @@
+.auth-form {
+  text-align: center;
+  .register-avatar {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    border: 1px solid #65dfc9;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  .auth-input {
+    width: 40%;
+    display: inline-block;
+
+    &.error {
+      input {
+        border-color: #e91933;
+      }
+      .error-box {
+        background-color: #e91933;
+        color: #fff;
+      }
+    }
+
+    input {
+      font-size: 1rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 0.8rem;
+      border: 1px solid #65dfc9;
+      outline: none;
+      background: rgba(224, 245, 255, 0.8);
+      color: #1b4b72;
+      margin-bottom: -4px;
+      width: 100%;
+      &::placeholder {
+        color: #426696;
+      }
+    }
+
+    .error-box {
+      display: inline-block;
+      padding: 0 0.4rem 0.2rem 0.4rem;
+      margin-bottom: 0.2rem;
+      font-size: 0.8rem;
+      border-bottom-left-radius: 0.4rem;
+      border-bottom-right-radius: 0.4rem;
+      width: 90%;
+      color: transparent;
+      background-color: transparent;
+    }
+  }
+
+  input[type="submit"] {
+    cursor: pointer;
+    width: 40%;
+    font-size: 1rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 0.8rem;
+    border: 1px solid #65dfc9;
+    outline: none;
+    background: rgba(224, 245, 255, 0.8);
+    color: #1b4b72;
+    margin-bottom: -4px;
+    &:hover {
+      background-color: #65dfc9;
+    }
+  }
+
+  .auth-error {
+    &.inactive {
+      color: transparent;
+      background-color: transparent;
+    }
+    background-color: #e91933;
+    color: #fff;
+    width: 40%;
+    display: inline-block;
+    margin-top: 0.4rem;
+    border-radius: 0.8rem;
+  }
+}
