@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 
-const AuthFields = ({ fields, errors, onChange }) =>
-  fields.map(({ name, value, type, placeholder, errorMsg, properties }, idx) => (
+const AuthFields = ({ inputs, errors, onChange }) =>
+  inputs.map(({ name, value, type, placeholder, errorMsg, properties }, idx) => (
     <Fragment key={name}>
       <div className={`auth-input ${errors[idx] ? 'error' : ''}`}>
         <input {...{ name, value, type, placeholder, onChange, ...properties }} />
