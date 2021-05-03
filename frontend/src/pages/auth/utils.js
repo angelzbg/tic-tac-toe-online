@@ -64,5 +64,5 @@ export const useAuthForm = (initFieldsArray = () => [], onSubmit = async () => {
     }
   };
 
-  return { state, onChange, submit };
+  return { inputs: state.fields, errors: state.errors, error: state.networkError, onChange, submit };
 };
