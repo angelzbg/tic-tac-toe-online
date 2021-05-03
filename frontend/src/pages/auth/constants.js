@@ -26,3 +26,18 @@ export const registerInputs = () => [
     errorMsg: "Passwords don't match",
   },
 ];
+
+export const loginInputs = () => [
+  {
+    name: 'username',
+    value: '',
+    type: 'text',
+    placeholder: 'Username'
+  },
+  {
+    name: 'password',
+    value: '',
+    type: 'password',
+    placeholder: 'Password'
+  }
+];

@@ -56,7 +56,7 @@ export const login = async (body) => {
   if (response.success) {
     getUserInfo();
   } else {
-    store.dispatch(setAuthLoading(true));
+    store.dispatch(setAuthLoading(false));
   }
 
   return response;
