@@ -1,7 +1,6 @@
 import { useReducer } from 'react';
-import AuthFields from './AuthFields';
 
-export const useAuthForm = (initFieldsArray = () => [], onSubmit = async () => {}, submitProps = {}) => {
+export const useAuthForm = (initFieldsArray = () => [], onSubmit = async () => {}) => {
   const [state, dispatch] = useReducer(
     (state, { type, payload }) => {
       switch (type) {
@@ -54,26 +53,16 @@ export const useAuthForm = (initFieldsArray = () => [], onSubmit = async () => {
     dispatch({ type: 'setNetworkError', payload: { error } });
   };
 
-  const authForm = (
-    <>
-      <AuthFields {...{ ...state, onChange }} />
-      <input
-        type="submit"
-        onClick={async () => {
-          if (!isValidForm()) {
-            return;
-          }
+  const submit = async () => {
+    if (!isValidForm()) {
+      return;
+    }
 
-          const response = await onSubmit({ ...getFieldsBody(), ...submitProps });
-          if (response.error) {
-            setNetworkError(response.error);
-          }
-        }}
-      />
-      <br />
-      <div className={`auth-error ${!state.networkError ? 'inactive' : ''}`}>{state.networkError}</div>
-    </>
-  );
+    const response = await onSubmit(getFieldsBody());
+    if (response.error) {
+      setNetworkError(response.error);
+    }
+  };
 
-  return authForm;
+  return { state, onChange, submit };
 };
