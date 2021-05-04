@@ -5,11 +5,6 @@ export const setGames = (payload) => ({
   payload,
 });
 
-export const setActiveGame = (payload) => ({
-  type: ACTION_TYPES.SET_ACTIVE_GAME,
-  payload,
-});
-
 export const addLobby = (payload) => ({
   type: ACTION_TYPES.ADD_LOBBY,
   payload,
