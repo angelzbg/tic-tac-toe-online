@@ -3,10 +3,12 @@ import './styles/style.css';
 import { useSelector } from 'react-redux';
 import { createGame } from '../../utils/api';
 import ActiveGame from './activegame';
+import { useHistory } from 'react-router';
 
 const ActiveGames = () => {
+  const history = useHistory();
   const { tictactoe, auth } = useSelector((store) => store);
-  const game = tictactoe.games[tictactoe.activeGame];
+  const game = auth.user ? tictactoe.games[tictactoe.activeGame] : null;
   const canCreate = !game || !!game.winner;
 
   return (
@@ -14,7 +16,7 @@ const ActiveGames = () => {
       {game && <ActiveGame {...{ game, auth }} />}
       <div className="container scroll-h">
         {canCreate && (
-          <button className="create-game" onClick={createGame}>
+          <button className="create-game" onClick={auth.user ? createGame() : history.push('/login')}>
             Create Game
           </button>
         )}
