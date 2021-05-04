@@ -1,5 +1,4 @@
-import store from "..";
-import { ACTION_TYPES } from "../constants";
+import { ACTION_TYPES } from '../constants';
 
 const initialState = {
   games: {},
@@ -12,9 +11,7 @@ const gamesReducer = (state = initialState, { type, payload }) => {
       let activeGame = state.activeGame;
       const userId = payload.user?._id;
       if (userId) {
-        const game = Object.values(payload.games).find(
-          ({ players }) => players[userId]
-        );
+        const game = Object.values(payload.games).find(({ players }) => players[userId]);
         if (game) {
           activeGame = game.gameId;
         }
@@ -84,7 +81,3 @@ const gamesReducer = (state = initialState, { type, payload }) => {
 };
 
 export default gamesReducer;
-
-// ADD_LOBBY: 'ADD_LOBBY',
-// ADD_PLAYER_TO_LOBBY: 'ADD_PLAYER_TO_LOBBY',
-// REMOVE_PLAYER_FROM_LOBBY: 'REMOVE_PLAYER_FROM_LOBBY',
