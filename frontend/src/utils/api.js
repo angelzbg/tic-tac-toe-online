@@ -3,15 +3,19 @@ import store from '../store';
 import { setAuthLoading, setAuthLogged, setUser } from '../store/actions/authActions';
 import { networkCall } from './utils';
 import { io } from 'socket.io-client';
-import {addLobby, setGames} from "../store/actions/gamesActions";
+import { addLobby, deleteGame, setGames } from '../store/actions/gamesActions';
 
 const socket = io('/');
 
 socket.emit('get-games');
-socket.on('received-games', (payload) => store.dispatch(setGames({games: payload, user: store.getState().auth.user})));
+socket.on('received-games', (payload) =>
+  store.dispatch(setGames({ games: payload, user: store.getState().auth.user }))
+);
 
-socket.on('created-lobby', (payload) => store.dispatch(addLobby({game: payload, user: store.getState().auth.user})));
+socket.on('created-lobby', (payload) => store.dispatch(addLobby({ game: payload, user: store.getState().auth.user })));
 export const createGame = () => socket.emit('create-lobby', store.getState().auth.user);
+
+socket.on('game-deleted', (payload) => store.dispatch(deleteGame(payload)));
 
 export const logOut = async () => {
   const response = await networkCall({ path: '/api/logout', method: 'GET' });
