@@ -1,5 +1,5 @@
-import store from '..';
-import { ACTION_TYPES } from '../constants';
+import store from "..";
+import { ACTION_TYPES } from "../constants";
 
 const initialState = {
   games: {},
@@ -8,22 +8,34 @@ const initialState = {
 
 const gamesReducer = (state = initialState, { type, payload }) => {
   switch (type) {
-    case ACTION_TYPES.SET_GAMES:
-      return { activeGame: state.activeGame, games: payload };
-    case ACTION_TYPES.SET_ACTIVE_GAME:
-      return { games: state.games, activeGame: payload };
+    case ACTION_TYPES.SET_GAMES: {
+      let activeGame = state.activeGame;
+      const userId = payload.user?._id;
+      if (userId) {
+        const game = Object.values(payload.games).find(
+          ({ players }) => players[userId]
+        );
+        if (game) {
+          activeGame = game.gameId;
+        }
+      }
+      return { activeGame, games: payload.games };
+    }
     case ACTION_TYPES.ADD_LOBBY: {
       let activeGame = state.activeGame;
-      if (payload.players[store.auth?.user?._id]) {
-        activeGame = payload.gameId;
+      if (payload.game.players[payload.user?._id]) {
+        activeGame = payload.game.gameId;
       }
-      return { activeGame, games: { ...state.games, [payload.gameId]: payload } };
+      return {
+        activeGame,
+        games: { ...state.games, [payload.game.gameId]: payload.game },
+      };
     }
     case ACTION_TYPES.ADD_PLAYER_TO_LOBBY: {
-      const { user, gameId } = payload;
+      const { joinedUser, gameId, user } = payload;
 
       let activeGame = state.activeGame;
-      if (user._id === store.auth?.user?._id) {
+      if (joinedUser._id === user?._id) {
         activeGame = gameId;
       }
 
@@ -31,21 +43,30 @@ const gamesReducer = (state = initialState, { type, payload }) => {
         activeGame,
         games: {
           ...state.games,
-          [gameId]: { ...state.games[gameId], players: { ...state.games[gameId].players, [user._id]: user } },
+          [gameId]: {
+            ...state.games[gameId],
+            players: { ...state.games[gameId].players, [joinedUser._id]: joinedUser },
+          },
         },
       };
     }
     case ACTION_TYPES.REMOVE_PLAYER_FROM_LOBBY: {
-      const { userId, gameId } = payload;
+      const { userId, gameId, user } = payload;
 
       let activeGame = state.activeGame;
-      if (userId === store.auth?.user?._id) {
+      if (userId === user?._id) {
         activeGame = null;
       }
 
       const { players } = state.games[gameId];
       delete players[userId];
-      return { activeGame, games: { ...state.games, [gameId]: { ...state.games[gameId], players: { ...players } } } };
+      return {
+        activeGame,
+        games: {
+          ...state.games,
+          [gameId]: { ...state.games[gameId], players: { ...players } },
+        },
+      };
     }
     case ACTION_TYPES.DELETE_GAME: {
       let activeGame = state.activeGame;

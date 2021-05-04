@@ -22,32 +22,7 @@ app.use(express.static(path.join(__dirname, 'frontend/build')));
 app.use(cors());
 
 const intervals = {};
-
-const tictactoe = {
-  gameid1: {
-    status: 'lobby',
-    turn: 'asdasd-asd-as-d-as',
-    players: {
-      'asdasd-asd-as-d-as': {
-        username: 'Pesho',
-        rate: 77,
-        avatar: 5,
-        symbol: 'X',
-      },
-      'asdasd-asd-as-d-ass': {
-        username: 'Pesho2',
-        rate: 76,
-        avatar: 2,
-        symbol: 'O',
-      },
-    },
-    fields: [
-      [0, 0, 0],
-      [0, 0, 0],
-      [0, 0, 0],
-    ],
-  },
-};
+const tictactoe = {};
 
 // ------------- Middlewares [ START ]
 
@@ -256,7 +231,7 @@ mongoose
       });
 
       socket.on('create-lobby', (user) => {
-        for (let game of tictactoe) {
+        for (let game of Object.values(tictactoe)) {
           if (user._id in game.players) {
             return;
           }
@@ -292,7 +267,7 @@ mongoose
       });
 
       socket.on('join-lobby', ({ user, gameId }) => {
-        for (let game of tictactoe) {
+        for (let game of Object.values(tictactoe)) {
           if (user._id in game.players) {
             return;
           }
@@ -310,7 +285,7 @@ mongoose
           symbol: 'O',
         };
 
-        io.emit('player-joined', { user: tictactoe[gameId].players[user._id], gameId });
+        io.emit('player-joined', { joinedUser: tictactoe[gameId].players[user._id], gameId });
       });
 
       socket.on('leave-lobby', ({ user, gameId }) => {
