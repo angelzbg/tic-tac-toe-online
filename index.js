@@ -242,6 +242,7 @@ mongoose
           gameId,
           status: 'lobby',
           winner: null,
+          loser: null,
           turn: user._id,
           players: {
             [user._id]: {
@@ -295,7 +296,7 @@ mongoose
           return;
         }
 
-        if (tictactoe[gameId].players[user._id].symbol === 'X') {
+        if (tictactoe[gameId].players[user._id].symbol === 'X' && game.status === 'lobby') {
           clearInterval(intervals[gameId]);
           delete intervals[gameId];
           delete tictactoe[gameId];
