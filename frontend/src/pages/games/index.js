@@ -16,7 +16,7 @@ const ActiveGames = () => {
       {game && <ActiveGame {...{ game, auth }} />}
       <div className="container scroll-h">
         {canCreate && (
-          <button className="create-game" onClick={auth.user ? createGame() : history.push('/login')}>
+          <button className="create-game" onClick={() => auth.user ? createGame() : history.push('/login')}>
             Create Game
           </button>
         )}
