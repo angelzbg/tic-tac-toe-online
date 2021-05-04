@@ -232,7 +232,7 @@ mongoose
 
       socket.on('create-lobby', (user) => {
         for (let game of Object.values(tictactoe)) {
-          if (user._id in game.players) {
+          if (user._id in game.players && !game.winner) {
             return;
           }
         }
@@ -241,6 +241,7 @@ mongoose
         tictactoe[gameId] = {
           gameId,
           status: 'lobby',
+          winner: null,
           turn: user._id,
           players: {
             [user._id]: {
@@ -268,7 +269,7 @@ mongoose
 
       socket.on('join-lobby', ({ user, gameId }) => {
         for (let game of Object.values(tictactoe)) {
-          if (user._id in game.players) {
+          if (user._id in game.players && !game.winner) {
             return;
           }
         }
@@ -290,7 +291,7 @@ mongoose
 
       socket.on('leave-lobby', ({ user, gameId }) => {
         let game = tictactoe[gameId];
-        if (!game || !game.players[user._id]) {
+        if (!game || !game.players[user._id] || game.status === 'progress') {
           return;
         }
 
