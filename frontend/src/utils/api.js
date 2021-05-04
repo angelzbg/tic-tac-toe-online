@@ -2,6 +2,11 @@ import { batch } from 'react-redux';
 import store from '../store';
 import { setAuthLoading, setAuthLogged, setUser } from '../store/actions/authActions';
 import { networkCall } from './utils';
+import { io } from 'socket.io-client';
+
+const socket = io('/');
+
+socket.on('hello', (data) => console.log(data))
 
 export const logOut = async () => {
   const response = await networkCall({ path: '/api/logout', method: 'GET' });
