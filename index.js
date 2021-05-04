@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'frontend/build')));
 app.use(cors());
 
-const intervals = {};
+const timeouts = {};
 const tictactoe = {};
 
 // ------------- Middlewares [ START ]
@@ -261,10 +261,10 @@ mongoose
 
         io.emit('created-lobby', tictactoe[gameId]);
 
-        intervals[gameId] = setTimeout(() => {
+        timeouts[gameId] = setTimeout(() => {
           delete tictactoe[gameId];
           io.emit('game-deleted', gameId);
-          delete intervals[gameId];
+          delete timeouts[gameId];
         }, 5 * 60000);
       });
 
@@ -297,10 +297,10 @@ mongoose
         }
 
         if (tictactoe[gameId].players[user._id].symbol === 'X' && game.status === 'lobby') {
-          clearInterval(intervals[gameId]);
-          delete intervals[gameId];
           delete tictactoe[gameId];
           io.emit('game-deleted', gameId);
+          clearTimeout(timeouts[gameId]);
+          delete timeouts[gameId];
           return;
         }
 
