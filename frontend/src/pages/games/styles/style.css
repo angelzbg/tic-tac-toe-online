@@ -17,4 +17,31 @@
 .scroll-h::-webkit-scrollbar-track {
   width: 10px;
 }
+
+.lobby-player .lobby-avatar {
+  width: 3.2rem;
+  height: 3.2rem;
+  margin-top: 1.8rem;
+  margin-left: 0.8rem;
+  position: absolute;
+}
+.lobby-player .lobby-username {
+  display: inline-block;
+  margin: 1.4rem 0 0 4.2rem;
+  color: #426696;
+  font-weight: 600;
+}
+.lobby-player .lobby-rate {
+  display: inline-block;
+  margin: 0 0 0 4.2rem;
+  color: #426696;
+  font-weight: 600;
+}
+.lobby-player .lobby-symbol {
+  display: inline-block;
+  margin: 0 0 0 4.2rem;
+  color: #426696;
+  font-weight: 600;
+}
+
 /*# sourceMappingURL=style.css.map */
