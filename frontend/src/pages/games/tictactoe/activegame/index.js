@@ -10,7 +10,7 @@ const ActiveGame = ({ game, auth, setActiveGameHeight }) => {
 
   useEffect(() => {
     setActiveGameHeight(activeGameHeight);
-  }, [activeGameHeight]);
+  }, [activeGameHeight, setActiveGameHeight]);
 
   return (
     <div key={game.gameId} className="active-game-card" ref={activeGameRef}>
