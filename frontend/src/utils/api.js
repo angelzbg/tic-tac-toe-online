@@ -70,6 +70,11 @@ export const subscriptions = {
 socket.on('connect', () => {
   if (socketInfo.disconnected) {
     socketInfo.disconnected = false;
+    const user = getCurrentUser();
+    if (user) {
+      socket.emit('identify', { username: user.username, socketId: user.socketId });
+    }
+
     if (socketInfo.subscription) {
       subscriptions[socketInfo.subscription].subscribe();
     }
