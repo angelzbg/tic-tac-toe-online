@@ -7,7 +7,7 @@ const initialState = {
 
 const gamesReducer = (state = initialState, { type, payload }) => {
   switch (type) {
-    case ACTION_TYPES.SET_GAMES: {
+    case ACTION_TYPES.TTT_SET_GAMES: {
       let activeGame = state.activeGame;
       const userId = payload.user?._id;
       if (userId) {
@@ -16,23 +16,25 @@ const gamesReducer = (state = initialState, { type, payload }) => {
           activeGame = game.gameId;
         }
       }
+
       return { activeGame, games: payload.games };
     }
-    case ACTION_TYPES.ADD_LOBBY: {
+    case ACTION_TYPES.TTT_ADD_LOBBY: {
+      const { game, user } = payload;
       let activeGame = state.activeGame;
-      if (payload.game.players[payload.user?._id]) {
-        activeGame = payload.game.gameId;
+      if (game.players[user?._id]) {
+        activeGame = game.gameId;
       }
+
       return {
         activeGame,
-        games: { ...state.games, [payload.game.gameId]: payload.game },
+        games: { ...state.games, [game.gameId]: game },
       };
     }
-    case ACTION_TYPES.ADD_PLAYER_TO_LOBBY: {
-      const { joinedUser, gameId, userId, user } = payload;
-
+    case ACTION_TYPES.TTT_ADD_PLAYER_TO_LOBBY: {
+      const { joinedUser, gameId, user } = payload;
       let activeGame = state.activeGame;
-      if (userId === user?._id) {
+      if (joinedUser._id === user?._id) {
         activeGame = gameId;
       }
 
@@ -42,14 +44,13 @@ const gamesReducer = (state = initialState, { type, payload }) => {
           ...state.games,
           [gameId]: {
             ...state.games[gameId],
-            players: { ...state.games[gameId].players, [userId]: joinedUser },
+            players: { ...state.games[gameId].players, [joinedUser._id]: joinedUser },
           },
         },
       };
     }
-    case ACTION_TYPES.REMOVE_PLAYER_FROM_LOBBY: {
+    case ACTION_TYPES.TTT_REMOVE_PLAYER_FROM_LOBBY: {
       const { userId, gameId, user } = payload;
-
       let activeGame = state.activeGame;
       if (userId === user?._id) {
         activeGame = null;
@@ -65,7 +66,7 @@ const gamesReducer = (state = initialState, { type, payload }) => {
         },
       };
     }
-    case ACTION_TYPES.DELETE_GAME: {
+    case ACTION_TYPES.TTT_DELETE_GAME: {
       let activeGame = state.activeGame;
       if (activeGame === payload) {
         activeGame = null;
@@ -75,6 +76,8 @@ const gamesReducer = (state = initialState, { type, payload }) => {
       delete games[payload];
       return { activeGame, games };
     }
+    case ACTION_TYPES.TTT_RESET_STATE:
+      return { games: {}, activeGame: null };
     default:
       return state;
   }
