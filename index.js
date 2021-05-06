@@ -257,6 +257,7 @@ mongoose
             winner: null,
             loser: null,
             turn: user._id,
+            created: new Date().getTime(),
             players: {
               [user._id]: {
                 _id: user._id,

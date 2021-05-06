@@ -12,6 +12,7 @@ const TicTacToeGames = () => {
   const { tictactoe, auth } = useSelector((store) => store);
   const activeGame = auth.user ? tictactoe.games[tictactoe.activeGame] : null;
   const canCreate = !activeGame || !!activeGame.winner;
+  const games = Object.values(tictactoe.games).sort((a, b) => b.created - a.created);
 
   useEffect(() => {
     TTT_subscribe();
@@ -30,7 +31,7 @@ const TicTacToeGames = () => {
             Create Game
           </button>
         )}
-        {Object.values(tictactoe.games).map((game) => {
+        {games.map((game) => {
           return (
             <div key={game.gameId} className="game-card">
               <div className="game-players">
