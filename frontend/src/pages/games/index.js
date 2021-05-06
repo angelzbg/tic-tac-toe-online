@@ -1,48 +1,62 @@
 import GameCard from './gamecard';
 import './styles/style.css';
 import { useSelector } from 'react-redux';
-import { createGame } from '../../utils/api';
+import { createGame, joinLobby } from '../../utils/api';
 import ActiveGame from './activegame';
 import { useHistory } from 'react-router';
-import {avatars} from "../../utils/constants";
+import { avatars } from '../../utils/constants';
 
 const ActiveGames = () => {
   const history = useHistory();
   const { tictactoe, auth } = useSelector((store) => store);
-  const game = auth.user ? tictactoe.games[tictactoe.activeGame] : null;
-  const canCreate = !game || !!game.winner;
+  const activeGame = auth.user ? tictactoe.games[tictactoe.activeGame] : null;
+  const canCreate = !activeGame || !!activeGame.winner;
 
   return (
     <>
-      {/*{game && <ActiveGame {...{ game, auth }} />}*/}
+      {activeGame && <ActiveGame {...{ game: activeGame, auth }} />}
       <div className="container scroll-h">
         {canCreate && (
-          <button className="create-game" onClick={() => auth.user ? createGame() : history.push('/login')}>
+          <button className="create-game" onClick={() => (auth.user ? createGame() : history.push('/login'))}>
             Create Game
           </button>
         )}
         {Object.values(tictactoe.games).map((game) => {
-          console.log(Object.values(game.players)[0]);
-          const player1 = Object.values(game.players)[0]
           return (
-              <div key={game.gameId} className="game-card">
-                  <div className="lobby-player">
-                      <img className="lobby-avatar" src={avatars[player1.avatar]} alt=""/>
-                      <p className="lobby-username" >{player1.username}</p>
-                      <p className="lobby-rate">Rate: {player1.rate}%</p>
-                      <p className="lobby-symbol">Symbol: {player1.symbol}</p>
+            <div key={game.gameId} className="game-card">
+              <div className="game-players">
+                {Object.entries(game.players).map(([playerId, player]) => (
+                  <div key={playerId} className="game-player">
+                    <img className="game-avatar" src={avatars[player.avatar]} alt="" />
+                    <div className="game-player-info">
+                      <p className="game-username">
+                        [{player.symbol}] {player.username}
+                      </p>
+                    </div>
                   </div>
-                  <div style={{textAlign: 'center'}} className="board">
-                      BOARD
-                  </div>
-                  <div className="lobby-player">
-                      <img className="lobby-avatar" src={avatars[player1.avatar]} alt=""/>
-                      <p className="lobby-username" >{player1.username}</p>
-                      <p className="lobby-rate">Rate: {player1.rate}%</p>
-                      <p className="lobby-symbol">Symbol: {player1.symbol}</p>
-                  </div>
+                ))}
               </div>
-          )
+              <div className="board">
+                {game.fields.map((row, i) => {
+                  return row.map((field, j) => {
+                    const isEmpty = field === 0;
+                    return (
+                      <div className="board-field" key={`${i}-${j}`}>
+                        {!isEmpty && field}
+                      </div>
+                    );
+                  });
+                })}
+              </div>
+              <div className="game-controllers">
+                {Object.keys(game.players).length < 2 && !activeGame && (
+                  <button className="join-button" onClick={() => joinLobby(game.gameId)}>
+                    Join
+                  </button>
+                )}
+              </div>
+            </div>
+          );
         })}
       </div>
     </>

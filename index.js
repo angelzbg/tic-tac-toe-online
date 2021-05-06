@@ -232,7 +232,7 @@ mongoose
 
       socket.on('create-lobby', (user) => {
         for (let game of Object.values(tictactoe)) {
-          if (user._id in game.players && !game.winner) {
+          if (user._id in game.players) {
             return;
           }
         }
@@ -270,13 +270,13 @@ mongoose
 
       socket.on('join-lobby', ({ user, gameId }) => {
         for (let game of Object.values(tictactoe)) {
-          if (user._id in game.players && !game.winner) {
+          if (user._id in game.players) {
             return;
           }
         }
 
         const game = tictactoe[gameId];
-        if (!game || Object.keys(game.players).length >= 2) {
+        if (!game || game.status !== 'lobby' || Object.keys(game.players).length >= 2) {
           return;
         }
 
@@ -287,7 +287,7 @@ mongoose
           symbol: 'O',
         };
 
-        io.emit('player-joined', { joinedUser: tictactoe[gameId].players[user._id], gameId });
+        io.emit('player-joined', { joinedUser: tictactoe[gameId].players[user._id], gameId, userId: user._id });
       });
 
       socket.on('leave-lobby', ({ user, gameId }) => {
@@ -296,7 +296,7 @@ mongoose
           return;
         }
 
-        if (tictactoe[gameId].players[user._id].symbol === 'X' && game.status === 'lobby') {
+        if (game.players[user._id].symbol === 'X' && game.status === 'lobby') {
           delete tictactoe[gameId];
           io.emit('game-deleted', gameId);
           clearTimeout(timeouts[gameId]);
@@ -307,6 +307,9 @@ mongoose
         delete tictactoe[gameId].players[user._id];
         io.emit('player-leave', { userId: user._id, gameId });
       });
+
+      // 'start-game'
+      // checks if game exists, if user is X, if players are 2
     });
 
     http.listen(SERVER_PORT, console.log('Server started'));
