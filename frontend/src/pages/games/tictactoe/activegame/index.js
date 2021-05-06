@@ -1,9 +1,19 @@
+import { SyncIcon } from '@primer/octicons-react';
+import ReactMomentCountDown from 'react-moment-countdown';
 import { TTT_leaveLobby } from '../../../../utils/api';
 import { avatars } from '../../../../utils/constants';
+import { useResizeDetector } from 'react-resize-detector';
+import { useEffect } from 'react';
 
-const ActiveGame = ({ game, auth }) => {
+const ActiveGame = ({ game, auth, setActiveGameHeight }) => {
+  const { height: activeGameHeight, ref: activeGameRef } = useResizeDetector();
+
+  useEffect(() => {
+    setActiveGameHeight(activeGameHeight);
+  }, [activeGameHeight]);
+
   return (
-    <div key={game.gameId} className="active-game-card">
+    <div key={game.gameId} className="active-game-card" ref={activeGameRef}>
       <div className="game-players">
         {Object.entries(game.players).map(([playerId, player]) => (
           <div key={playerId} className="game-player">
@@ -38,6 +48,12 @@ const ActiveGame = ({ game, auth }) => {
           <button className="leave-button" onClick={() => TTT_leaveLobby(game.gameId)}>
             Leave
           </button>
+        )}
+        {game.status === 'lobby' && (
+          <div className="lobby-timeout">
+            <SyncIcon size="medium" />
+            <ReactMomentCountDown toDate={new Date(game.created + 600000)} targetFormatMask="m:ss" />
+          </div>
         )}
       </div>
     </div>

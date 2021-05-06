@@ -216,12 +216,14 @@ app.get('*', (_, res) => res.sendFile(path.join(__dirname + '/frontend/build/ind
 
 // ------------- React browser router extra support [  END  ]
 
-const identifySocket = async (identification, { username, socketId }) => {
-  const foundUser = await User.findOne({ username, socketId });
-  if (foundUser) {
-    identification.user = foundUser;
-    identification.user._id = user._id.toString();
-  }
+const identifySocket = (identification, { username, socketId }) => {
+  (async (identification, username, socketId) => {
+    const foundUser = await User.findOne({ username, socketId });
+    if (foundUser) {
+      identification.user = foundUser;
+      identification.user._id = foundUser._id.toString();
+    }
+  })(identification, username, socketId);
 };
 
 mongoose
@@ -280,7 +282,7 @@ mongoose
             delete tictactoe[gameId];
             io.emit('3xT-game-deleted', gameId);
             delete timeouts[gameId];
-          }, 5 * 60000);
+          }, 10 * 60000);
         });
 
         socket.on('3xT-join-lobby', ({ gameId }) => {
@@ -332,6 +334,9 @@ mongoose
 
         // 'start-game'
         // checks if game exists, if user is X, if players are 2
+
+        // Online players handler [ TO DO ]
+        socket.on('disconnecting', () => {});
       });
     });
 
