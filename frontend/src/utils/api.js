@@ -14,6 +14,11 @@ import {
 
 const socket = io('/');
 
+const socketInfo = {
+  disconnected: false,
+  subscription: null,
+};
+
 // Tic Tac Toe [ START ]
 export const TTT_createGame = () => socket.emit('3xT-create-lobby');
 export const TTT_joinLobby = (gameId) => socket.emit('3xT-join-lobby', { gameId });
@@ -40,6 +45,7 @@ export const TTT_subscribe = () => {
   });
 
   socket.emit('3xT-subscribe');
+  socketInfo.subscription = '3xT';
 };
 export const TTT_unsubscribe = () => {
   socket.off('3xT-received-games');
@@ -48,8 +54,34 @@ export const TTT_unsubscribe = () => {
   socket.off('3xT-player-leave');
   socket.off('3xT-game-deleted');
   store.dispatch(TTT_resetState());
+  socketInfo.subscription = null;
 };
 // Tic Tac Toe [  END  ]
+
+const subscriptions = {
+  '3xT': {
+    subscribe: TTT_subscribe,
+    unsubscribe: TTT_unsubscribe,
+  },
+};
+
+socket.on('connect', () => {
+  if (socketInfo.disconnected) {
+    socketInfo.disconnected = false;
+    if (socketInfo.subscription) {
+      subscriptions[socketInfo.subscription].subscribe();
+    }
+  }
+});
+
+socket.on('disconnect', () => {
+  socketInfo.disconnected = true;
+  if (socketInfo.subscription) {
+    const subscription = socketInfo.subscription;
+    subscriptions[subscription].unsubscribe();
+    socketInfo.subscription = subscription;
+  }
+});
 
 export const logOut = async () => {
   const response = await networkCall({ path: '/api/logout', method: 'GET' });
