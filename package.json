@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon ./index.js",
+    "start1": "node ./index.js",
     "heroku-postbuild": "cd frontend && npm install --only=dev && npm install && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

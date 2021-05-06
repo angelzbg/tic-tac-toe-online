@@ -1,14 +1,16 @@
-import GameCard from './gamecard';
 import './styles/style.css';
+import { SyncIcon } from '@primer/octicons-react';
+import ReactMomentCountDown from 'react-moment-countdown';
 import { useSelector } from 'react-redux';
 import ActiveGame from './activegame';
 import { useHistory } from 'react-router';
 import { avatars } from '../../../utils/constants';
 import { TTT_createGame, TTT_joinLobby, TTT_subscribe, TTT_unsubscribe } from '../../../utils/api';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const TicTacToeGames = () => {
   const history = useHistory();
+  const [activeGameHeight, setActiveGameHeight] = useState(0);
   const { tictactoe, auth } = useSelector((store) => store);
   const activeGame = auth.user ? tictactoe.games[tictactoe.activeGame] : null;
   const canCreate = !activeGame || !!activeGame.winner;
@@ -24,8 +26,13 @@ const TicTacToeGames = () => {
   console.log(activeGame);
   return (
     <>
-      {activeGame && <ActiveGame {...{ game: activeGame, auth }} />}
-      <div className="container scroll-h">
+      {activeGame && <ActiveGame {...{ game: activeGame, auth, setActiveGameHeight }} />}
+      <div
+        className="container scroll-h"
+        style={{
+          maxHeight: activeGame ? `calc(80% - ${activeGameHeight}px - 1.2rem)` : '80%',
+        }}
+      >
         {canCreate && (
           <button className="create-game" onClick={() => (auth.user ? TTT_createGame() : history.push('/login'))}>
             Create Game
@@ -66,6 +73,12 @@ const TicTacToeGames = () => {
                   >
                     Join
                   </button>
+                )}
+                {game.status === 'lobby' && (
+                  <div className="lobby-timeout">
+                    <SyncIcon size="medium" />
+                    <ReactMomentCountDown toDate={new Date(game.created + 600000)} targetFormatMask="m:ss" />
+                  </div>
                 )}
               </div>
             </div>
