@@ -12,6 +12,7 @@ const ActiveGames = () => {
   const activeGame = auth.user ? tictactoe.games[tictactoe.activeGame] : null;
   const canCreate = !activeGame || !!activeGame.winner;
 
+    console.log(activeGame)
   return (
     <>
       {activeGame && <ActiveGame {...{ game: activeGame, auth }} />}

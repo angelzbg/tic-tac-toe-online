@@ -1,78 +1,62 @@
 body {
   margin: 0;
   font-size: 16px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 html {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 * {
-  -webkit-box-sizing: inherit;
-          box-sizing: inherit;
+  box-sizing: inherit;
   margin: 0;
   padding: 0;
 }
 
 .app-wrapper {
   min-height: 100vh;
-  background: -webkit-gradient(linear, left bottom, right top, from(#65dfc9), to(#6cdbeb));
   background: linear-gradient(to right top, #65dfc9, #6cdbeb);
-  display: -ms-grid;
   display: grid;
   justify-items: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  align-items: center;
   position: relative;
 }
 
 .glass {
-  display: -ms-grid;
   display: grid;
-  background: -webkit-gradient(linear, left top, right bottom, from(rgba(255, 255, 255, 0.7)), to(rgba(255, 255, 255, 0.3)));
   background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
-  min-height: 80vh;
+  height: 80vh;
+  max-height: 80vh;
   width: 60%;
   border-radius: 1.2rem;
-  -ms-grid-columns: 0.5fr 1fr;
-      grid-template-columns: 0.5fr 1fr;
-  -webkit-column-gap: 3rem;
-          column-gap: 3rem;
+  grid-template-columns: 0.5fr 1fr;
+  column-gap: 3rem;
 }
-
 .glass .app-left-side {
   border-radius: 1.2rem;
-  display: -ms-inline-grid;
   display: inline-grid;
-  height: 100%;
+  height: 80vh;
+  max-height: 80vh;
   width: 100%;
-  -webkit-box-shadow: 10px 0 20px -20px #888;
-          box-shadow: 10px 0 20px -20px #888;
-  -ms-grid-rows: 0.4fr 1fr;
-      grid-template-rows: 0.4fr 1fr;
+  box-shadow: 10px 0 20px -20px #888;
+  grid-template-rows: 0.4fr 1fr;
   row-gap: 2rem;
-  background: -webkit-gradient(linear, left top, right bottom, from(rgba(255, 255, 255, 0.7)), to(rgba(255, 255, 255, 0.3)));
   background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
 }
-
 .glass .app-right-side {
-  display: -ms-inline-grid;
   display: inline-grid;
   height: 100%;
   width: 100%;
   border-top-right-radius: 1.2rem;
   border-bottom-right-radius: 1.2rem;
-  -ms-grid-rows: 0.3fr 1fr;
-      grid-template-rows: 0.3fr 1fr;
+  grid-template-rows: 0.3fr 1fr;
   row-gap: 1.875rem;
 }
 
@@ -83,28 +67,15 @@ code {
 [tooltip]:hover::before {
   content: attr(tooltip);
   position: absolute;
-  width: -webkit-max-content;
-  width: -moz-max-content;
   width: max-content;
-  background: -webkit-gradient(linear, left top, right bottom, from(rgba(255, 255, 255, 0.9)), to(rgba(255, 255, 255, 0.6)));
   background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6));
   color: rgba(0, 0, 0, 0.7);
   padding: 0.1rem 0.5rem 0.2rem 0.5rem;
   border-radius: 0.5rem;
   top: -0.5rem;
   left: 50%;
-  -webkit-transform: translate(-50%, -100%);
-          transform: translate(-50%, -100%);
+  transform: translate(-50%, -100%);
   font-size: 1rem;
-}
-
-@-webkit-keyframes opacity-keyframe {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
 }
 
 @keyframes opacity-keyframe {
@@ -115,4 +86,5 @@ code {
     opacity: 1;
   }
 }
+
 /*# sourceMappingURL=index.css.map */
