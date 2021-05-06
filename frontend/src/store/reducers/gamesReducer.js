@@ -29,10 +29,10 @@ const gamesReducer = (state = initialState, { type, payload }) => {
       };
     }
     case ACTION_TYPES.ADD_PLAYER_TO_LOBBY: {
-      const { joinedUser, gameId, user } = payload;
+      const { joinedUser, gameId, userId, user } = payload;
 
       let activeGame = state.activeGame;
-      if (joinedUser._id === user?._id) {
+      if (userId === user?._id) {
         activeGame = gameId;
       }
 
@@ -42,7 +42,7 @@ const gamesReducer = (state = initialState, { type, payload }) => {
           ...state.games,
           [gameId]: {
             ...state.games[gameId],
-            players: { ...state.games[gameId].players, [joinedUser._id]: joinedUser },
+            players: { ...state.games[gameId].players, [userId]: joinedUser },
           },
         },
       };

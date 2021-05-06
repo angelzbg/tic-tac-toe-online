@@ -3,7 +3,7 @@ import store from '../store';
 import { setAuthLoading, setAuthLogged, setUser } from '../store/actions/authActions';
 import { networkCall } from './utils';
 import { io } from 'socket.io-client';
-import { addLobby, deleteGame, setGames } from '../store/actions/gamesActions';
+import { addLobby, addPlayerToLobby, deleteGame, removePlayerFromlobby, setGames } from '../store/actions/gamesActions';
 
 const socket = io('/');
 
@@ -15,6 +15,15 @@ socket.on('received-games', (payload) =>
 socket.on('created-lobby', (payload) => store.dispatch(addLobby({ game: payload, user: store.getState().auth.user })));
 export const createGame = () => socket.emit('create-lobby', store.getState().auth.user);
 
+export const joinLobby = (gameId) => socket.emit('join-lobby', { gameId, user: store.getState().auth.user });
+socket.on('player-joined', (payload) =>
+  store.dispatch(addPlayerToLobby({ ...payload, user: store.getState().auth.user }))
+);
+
+export const leaveLobby = (gameId) => socket.emit('leave-lobby', { gameId, user: store.getState().auth.user });
+socket.on('player-leave', (payload) =>
+  store.dispatch(removePlayerFromlobby({ ...payload, user: store.getState().auth.user }))
+);
 socket.on('game-deleted', (payload) => store.dispatch(deleteGame(payload)));
 
 export const logOut = async () => {
