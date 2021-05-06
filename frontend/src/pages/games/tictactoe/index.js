@@ -23,16 +23,12 @@ const TicTacToeGames = () => {
     };
   }, []);
 
-  console.log(activeGame);
+  //console.log(activeGame);
+  const containerHeight = activeGame ? `calc(80% - ${activeGameHeight || 0}px - 1.2rem)` : '80%';
   return (
     <>
       {activeGame && <ActiveGame {...{ game: activeGame, auth, setActiveGameHeight }} />}
-      <div
-        className="container scroll-h"
-        style={{
-          maxHeight: activeGame ? `calc(80% - ${activeGameHeight}px - 1.2rem)` : '80%',
-        }}
-      >
+      <div className="container scroll-h" style={{ height: containerHeight }}>
         {canCreate && (
           <button className="create-game" onClick={() => (auth.user ? TTT_createGame() : history.push('/login'))}>
             Create Game
