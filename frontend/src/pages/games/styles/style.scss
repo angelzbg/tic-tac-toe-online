@@ -1,27 +1,11 @@
 .container {
-  //border:1px solid black;
   margin-right: 3rem;
   overflow-y: scroll;
-  height: 493px;
+  overflow-x: hidden;
+  max-height: 30vh;
+  //height: 100%;
   padding-right: 5px;
-  //background-image: linear-gradient(to top, rgba(255, 255, 255, 0.3) 3%, transparent 25px);
 }
-
-//.container::after {
-//  position: absolute;
-//  background: linear-gradient(
-//    to top,
-//    rgba(255, 255, 255, 0.7),
-//    rgba(255, 255, 255, 0.3)
-//  );
-//  content: "";
-//  bottom: 10vh;
-//  //top: 0;
-//  pointer-events: none;
-//  height: 20px;
-//  width: 33.5vw;
-//  filter: blur(13px);
-//}
 
 .scroll-h::-webkit-scrollbar {
   width: 10px;
@@ -54,7 +38,7 @@
   width: calc(100% - 3rem - 15px);
   height: fit-content;
   border-radius: 1rem;
-  margin-bottom: 2rem;
+  //margin-bottom: 2rem;
   box-shadow: rgba(149, 157, 165, 0.2) 0 8px 12px;
   background: linear-gradient(to right bottom, rgba(42, 122, 241, 0.7), rgba(91, 196, 223, 0.3));
   .game-players {
