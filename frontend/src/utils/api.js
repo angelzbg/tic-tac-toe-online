@@ -12,6 +12,8 @@ import {
   TTT_setGames,
 } from '../store/actions/TTTActions';
 
+export const getCurrentUser = () => store.getState().auth.user;
+
 const socket = io('/');
 
 const socketInfo = {
@@ -25,19 +27,19 @@ export const TTT_joinLobby = (gameId) => socket.emit('3xT-join-lobby', { gameId 
 export const TTT_leaveLobby = (gameId) => socket.emit('3xT-leave-lobby', { gameId });
 export const TTT_subscribe = () => {
   socket.on('3xT-received-games', (payload) => {
-    store.dispatch(TTT_setGames({ games: payload, user: store.getState().auth.user }));
+    store.dispatch(TTT_setGames({ games: payload, user: getCurrentUser() }));
   });
 
   socket.on('3xT-created-lobby', (payload) => {
-    store.dispatch(TTT_addLobby({ game: payload, user: store.getState().auth.user }));
+    store.dispatch(TTT_addLobby({ game: payload, user: getCurrentUser() }));
   });
 
   socket.on('3xT-player-joined', (payload) => {
-    store.dispatch(TTT_addPlayerToLobby({ ...payload, user: store.getState().auth.user }));
+    store.dispatch(TTT_addPlayerToLobby({ ...payload, user: getCurrentUser() }));
   });
 
   socket.on('3xT-player-leave', (payload) => {
-    store.dispatch(TTT_removePlayerFromlobby({ ...payload, user: store.getState().auth.user }));
+    store.dispatch(TTT_removePlayerFromlobby({ ...payload, user: getCurrentUser() }));
   });
 
   socket.on('3xT-game-deleted', (payload) => {
@@ -58,7 +60,7 @@ export const TTT_unsubscribe = () => {
 };
 // Tic Tac Toe [  END  ]
 
-const subscriptions = {
+export const subscriptions = {
   '3xT': {
     subscribe: TTT_subscribe,
     unsubscribe: TTT_unsubscribe,
