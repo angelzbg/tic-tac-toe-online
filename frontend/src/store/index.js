@@ -1,11 +1,11 @@
 import { combineReducers, createStore } from "redux";
 import authReducer from "./reducers/authReducer";
-import gamesReducer from "./reducers/gamesReducer";
+import TTTReducer from "./reducers/TTTReducer";
 
 const store = createStore(
   combineReducers({
     auth: authReducer,
-    tictactoe: gamesReducer,
+    tictactoe: TTTReducer,
   })
 );
 

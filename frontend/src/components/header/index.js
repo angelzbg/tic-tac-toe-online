@@ -3,6 +3,9 @@ import './styles/style.css';
 
 const headers = {
   default: {
+    title: 'Games',
+  },
+  'tic-tac-toe': {
     title: 'Tic Tac Toe',
   },
   ranking: {
@@ -18,19 +21,19 @@ const headers = {
 
 const Header = ({
   match: {
-    params: { route },
+    params: { route, subroute },
   },
 }) => {
-  const { title } = headers[route] || headers.default;
+  const title = `${(headers[route] || headers.default)?.title}${subroute ? ` - ${headers[subroute]?.title}` : ''}`;
 
   useEffect(() => {
-    document.title = `3xT - ${title}`;
+    document.title = title;
   }, [title]);
 
   return (
     <div className="header">
       <h1 className="header-title">{title}</h1>
-      <div className="header-underline"></div>
+      <div className="header-underline" />
     </div>
   );
 };

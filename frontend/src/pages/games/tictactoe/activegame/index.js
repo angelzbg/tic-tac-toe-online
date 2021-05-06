@@ -1,5 +1,5 @@
-import { leaveLobby } from '../../../utils/api';
-import { avatars } from '../../../utils/constants';
+import { TTT_leaveLobby } from '../../../../utils/api';
+import { avatars } from '../../../../utils/constants';
 
 const ActiveGame = ({ game, auth }) => {
   return (
@@ -35,7 +35,7 @@ const ActiveGame = ({ game, auth }) => {
             <button className="start-button">Start</button>
           )}
         {game.status !== 'progress' && (
-          <button className="leave-button" onClick={() => leaveLobby(game.gameId)}>
+          <button className="leave-button" onClick={() => TTT_leaveLobby(game.gameId)}>
             Leave
           </button>
         )}

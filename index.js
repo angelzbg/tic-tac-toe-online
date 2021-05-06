@@ -216,6 +216,14 @@ app.get('*', (_, res) => res.sendFile(path.join(__dirname + '/frontend/build/ind
 
 // ------------- React browser router extra support [  END  ]
 
+const identifySocket = async (identification, { username, socketId }) => {
+  const foundUser = await User.findOne({ username, socketId });
+  if (foundUser) {
+    identification.user = foundUser;
+    identification.user._id = user._id.toString();
+  }
+};
+
 mongoose
   .connect(MONGO_CONNECTION_STRING, {
     useNewUrlParser: true,
@@ -225,91 +233,105 @@ mongoose
   })
   .then(() => {
     io.on('connection', (socket) => {
-      // TO DO Identify user by socketId (anti-cheat)
-      socket.on('get-games', () => {
-        socket.emit('received-games', tictactoe);
-      });
+      const identification = { user: null };
 
-      socket.on('create-lobby', (user) => {
-        for (let game of Object.values(tictactoe)) {
-          if (user._id in game.players) {
-            return;
+      socket.on('identify', (data) => identifySocket(identification, data));
+
+      socket.on('3xT-subscribe', () => {
+        socket.emit('3xT-received-games', tictactoe);
+
+        socket.on('3xT-create-lobby', () => {
+          const { user } = identification;
+          if (!user) return;
+
+          for (let game of Object.values(tictactoe)) {
+            if (user._id in game.players) {
+              return;
+            }
           }
-        }
 
-        const gameId = uniqid();
-        tictactoe[gameId] = {
-          gameId,
-          status: 'lobby',
-          winner: null,
-          loser: null,
-          turn: user._id,
-          players: {
-            [user._id]: {
-              username: user.username,
-              rate: user.rate,
-              avatar: user.avatar,
-              symbol: 'X',
+          const gameId = uniqid();
+          tictactoe[gameId] = {
+            gameId,
+            status: 'lobby',
+            winner: null,
+            loser: null,
+            turn: user._id,
+            players: {
+              [user._id]: {
+                _id: user._id,
+                username: user.username,
+                rate: user.rate,
+                avatar: user.avatar,
+                symbol: 'X',
+              },
             },
-          },
-          fields: [
-            [0, 0, 0],
-            [0, 0, 0],
-            [0, 0, 0],
-          ],
-        };
+            fields: [
+              [0, 0, 0],
+              [0, 0, 0],
+              [0, 0, 0],
+            ],
+          };
 
-        io.emit('created-lobby', tictactoe[gameId]);
+          io.emit('3xT-created-lobby', tictactoe[gameId]);
 
-        timeouts[gameId] = setTimeout(() => {
-          delete tictactoe[gameId];
-          io.emit('game-deleted', gameId);
-          delete timeouts[gameId];
-        }, 5 * 60000);
-      });
+          timeouts[gameId] = setTimeout(() => {
+            delete tictactoe[gameId];
+            io.emit('3xT-game-deleted', gameId);
+            delete timeouts[gameId];
+          }, 5 * 60000);
+        });
 
-      socket.on('join-lobby', ({ user, gameId }) => {
-        for (let game of Object.values(tictactoe)) {
-          if (user._id in game.players) {
+        socket.on('3xT-join-lobby', ({ gameId }) => {
+          const { user } = identification;
+          if (!user) return;
+
+          for (let game of Object.values(tictactoe)) {
+            if (user._id in game.players) {
+              return;
+            }
+          }
+
+          const game = tictactoe[gameId];
+          if (!game || game.status !== 'lobby' || Object.keys(game.players).length >= 2) {
             return;
           }
-        }
 
-        const game = tictactoe[gameId];
-        if (!game || game.status !== 'lobby' || Object.keys(game.players).length >= 2) {
-          return;
-        }
+          tictactoe[gameId].players[user._id] = {
+            _id: user._id,
+            username: user.username,
+            rate: user.rate,
+            avatar: user.avatar,
+            symbol: 'O',
+          };
 
-        tictactoe[gameId].players[user._id] = {
-          username: user.username,
-          rate: user.rate,
-          avatar: user.avatar,
-          symbol: 'O',
-        };
+          io.emit('3xT-player-joined', { joinedUser: tictactoe[gameId].players[user._id], gameId });
+        });
 
-        io.emit('player-joined', { joinedUser: tictactoe[gameId].players[user._id], gameId, userId: user._id });
+        socket.on('3xT-leave-lobby', ({ gameId }) => {
+          const { user } = identification;
+          if (!user) return;
+
+          let game = tictactoe[gameId];
+          if (!game || !game.players[user._id] || game.status === 'progress') {
+            return;
+          }
+
+          if (game.players[user._id].symbol === 'X' && game.status === 'lobby') {
+            delete tictactoe[gameId];
+            io.emit('3xT-game-deleted', gameId);
+            clearTimeout(timeouts[gameId]);
+            delete timeouts[gameId];
+            return;
+          }
+
+          delete tictactoe[gameId].players[user._id];
+          io.emit('3xT-player-leave', { userId: user._id, gameId });
+        });
+
+        // 'start-game'
+        // checks if game exists, if user is X, if players are 2
       });
-
-      socket.on('leave-lobby', ({ user, gameId }) => {
-        let game = tictactoe[gameId];
-        if (!game || !game.players[user._id] || game.status === 'progress') {
-          return;
-        }
-
-        if (game.players[user._id].symbol === 'X' && game.status === 'lobby') {
-          delete tictactoe[gameId];
-          io.emit('game-deleted', gameId);
-          clearTimeout(timeouts[gameId]);
-          delete timeouts[gameId];
-          return;
-        }
-
-        delete tictactoe[gameId].players[user._id];
-        io.emit('player-leave', { userId: user._id, gameId });
-      });
-
-      // 'start-game'
-      // checks if game exists, if user is X, if players are 2
     });
 
     http.listen(SERVER_PORT, console.log('Server started'));

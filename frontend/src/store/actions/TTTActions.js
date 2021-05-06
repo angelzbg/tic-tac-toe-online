@@ -1,28 +1,32 @@
 import { ACTION_TYPES } from '../constants';
 
-export const setGames = (payload) => ({
-  type: ACTION_TYPES.SET_GAMES,
+export const TTT_setGames = (payload) => ({
+  type: ACTION_TYPES.TTT_SET_GAMES,
   payload,
 });
 
-export const addLobby = (payload) => ({
-  type: ACTION_TYPES.ADD_LOBBY,
+export const TTT_addLobby = (payload) => ({
+  type: ACTION_TYPES.TTT_ADD_LOBBY,
   payload,
 });
 
-export const addPlayerToLobby = (payload) => ({
-  type: ACTION_TYPES.ADD_PLAYER_TO_LOBBY,
+export const TTT_addPlayerToLobby = (payload) => ({
+  type: ACTION_TYPES.TTT_ADD_PLAYER_TO_LOBBY,
   payload,
 });
 
-export const removePlayerFromlobby = (payload) => ({
-  type: ACTION_TYPES.REMOVE_PLAYER_FROM_LOBBY,
+export const TTT_removePlayerFromlobby = (payload) => ({
+  type: ACTION_TYPES.TTT_REMOVE_PLAYER_FROM_LOBBY,
   payload,
 });
 
-export const deleteGame = (payload) => ({
-  type: ACTION_TYPES.DELETE_GAME,
+export const TTT_deleteGame = (payload) => ({
+  type: ACTION_TYPES.TTT_DELETE_GAME,
   payload,
+});
+
+export const TTT_resetState = () => ({
+  type: ACTION_TYPES.TTT_RESET_STATE,
 });
 
 // // sending to all clients except sender
