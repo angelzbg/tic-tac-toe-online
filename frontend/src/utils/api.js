@@ -8,6 +8,7 @@ import {
   TTT_addPlayerToLobby,
   TTT_deleteGame,
   TTT_removePlayerFromlobby,
+  TTT_resetState,
   TTT_setGames,
 } from '../store/actions/TTTActions';
 
@@ -46,6 +47,7 @@ export const TTT_unsubscribe = () => {
   socket.off('3xT-player-joined');
   socket.off('3xT-player-leave');
   socket.off('3xT-game-deleted');
+  store.dispatch(TTT_resetState());
 };
 // Tic Tac Toe [  END  ]
 
