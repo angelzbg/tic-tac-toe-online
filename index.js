@@ -294,6 +294,7 @@ mongoose
             status: 'lobby',
             turn: user._id,
             created: new Date().getTime(),
+            rotate: Math.ceil(Math.random() * 5) * (Math.round(Math.random()) ? 1 : -1),
             players: {
               [user._id]: {
                 _id: user._id,
