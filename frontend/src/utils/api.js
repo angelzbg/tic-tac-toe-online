@@ -7,6 +7,8 @@ import {
   TTT_addLobby,
   TTT_addPlayerToLobby,
   TTT_deleteGame,
+  TTT_gameFinished,
+  TTT_playerTurn,
   TTT_removePlayerFromlobby,
   TTT_resetState,
   TTT_setGames,
@@ -25,6 +27,7 @@ const socketInfo = {
 export const TTT_createGame = () => socket.emit('3xT-create-lobby');
 export const TTT_joinLobby = (gameId) => socket.emit('3xT-join-lobby', { gameId });
 export const TTT_leaveLobby = (gameId) => socket.emit('3xT-leave-lobby', { gameId });
+export const TTT_makeTurn = (gameId, i, j) => socket.emit('3xT-make-turn', { gameId, i, j });
 export const TTT_subscribe = () => {
   socket.on('3xT-received-games', (payload) => {
     store.dispatch(TTT_setGames({ games: payload, user: getCurrentUser() }));
@@ -46,6 +49,14 @@ export const TTT_subscribe = () => {
     store.dispatch(TTT_deleteGame(payload));
   });
 
+  socket.on('3xT-player-turn', (payload) => {
+    store.dispatch(TTT_playerTurn(payload));
+  });
+
+  socket.on('3xT-game-finished', (payload) => {
+    store.dispatch(TTT_gameFinished(payload));
+  });
+
   socket.emit('3xT-subscribe');
   socketInfo.subscription = '3xT';
 };
@@ -55,6 +66,8 @@ export const TTT_unsubscribe = () => {
   socket.off('3xT-player-joined');
   socket.off('3xT-player-leave');
   socket.off('3xT-game-deleted');
+  socket.off('3xT-player-turn');
+  socket.off('3xT-game-finished');
   store.dispatch(TTT_resetState());
   socketInfo.subscription = null;
 };
@@ -104,6 +117,7 @@ export const logOut = async () => {
 
 export const updateUserAvatar = (avatar = 0) => {
   networkCall({ path: '/api/update-user', method: 'POST', body: { avatar } });
+  socket.emit('avatar-change', avatar);
 };
 
 export const getUserInfo = async () => {

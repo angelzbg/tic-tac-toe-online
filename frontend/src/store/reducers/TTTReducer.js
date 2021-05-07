@@ -66,6 +66,21 @@ const gamesReducer = (state = initialState, { type, payload }) => {
         },
       };
     }
+    case ACTION_TYPES.TTT_PLAYER_TURN: {
+      const { gameId, fields, turn, turnDate } = payload;
+      const { activeGame, games } = state;
+      return {
+        activeGame: activeGame,
+        games: { ...games, [gameId]: { ...games[gameId], fields, turn, turnDate } },
+      };
+    }
+    case ACTION_TYPES.TTT_GAME_FINISHED: {
+      const { activeGame, games } = state;
+      return {
+        activeGame,
+        games: { ...games, [payload.gameId]: payload },
+      };
+    }
     case ACTION_TYPES.TTT_DELETE_GAME: {
       let activeGame = state.activeGame;
       if (activeGame === payload) {

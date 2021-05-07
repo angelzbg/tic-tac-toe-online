@@ -25,6 +25,16 @@ export const TTT_deleteGame = (payload) => ({
   payload,
 });
 
+export const TTT_playerTurn = (payload) => ({
+  type: ACTION_TYPES.TTT_PLAYER_TURN,
+  payload,
+});
+
+export const TTT_gameFinished = (payload) => ({
+  type: ACTION_TYPES.TTT_GAME_FINISHED,
+  payload,
+});
+
 export const TTT_resetState = () => ({
   type: ACTION_TYPES.TTT_RESET_STATE,
 });
