@@ -216,6 +216,30 @@ app.get('*', (_, res) => res.sendFile(path.join(__dirname + '/frontend/build/ind
 
 // ------------- React browser router extra support [  END  ]
 
+const check3xTFields = (fields = []) => {
+  for (let i = 0; i < 3; i++) {
+    const rowCheck = [...new Set(fields[i])];
+    if (rowCheck.length === 1 && rowCheck[0] !== 0) {
+      return { winner: rowCheck[0], path: 0 };
+    }
+
+    const colCheck = [...new Set(fields.reduce((col, row) => [...col, row[i]], []))];
+    if (colCheck.length === 1 && colCheck[0] !== 0) {
+      return { winner: colCheck[0], path: 3 + i };
+    }
+  }
+
+  const mainDiag = [...new Set([fields[0][0], fields[1][1], fields[2][2]])];
+  if (mainDiag.length === 1 && mainDiag[0] !== 0) {
+    return { winner: mainDiag[0], path: 6 };
+  }
+
+  const secDiag = [...new Set([fields[0][2], fields[1][1], fields[2][0]])];
+  if (secDiag.length === 1 && secDiag[0] !== 0) {
+    return { winner: secDiag[0], path: 7 };
+  }
+};
+
 const identifySocket = (identification, { username, socketId }) => {
   (async (identification, username, socketId) => {
     const foundUser = await User.findOne({ username, socketId });
@@ -239,6 +263,18 @@ mongoose
 
       socket.on('identify', (data) => identifySocket(identification, data));
 
+      socket.on('avatar-change', (avatar) => {
+        const { user } = identification;
+        if (!user) return;
+        try {
+          const parsed = parseInt(avatar);
+          if (typeof parsed !== 'number') return;
+          user.avatar = parsed;
+        } catch (ex) {
+          user.avatar = 0;
+        }
+      });
+
       socket.on('3xT-subscribe', () => {
         socket.emit('3xT-received-games', tictactoe);
 
@@ -256,8 +292,6 @@ mongoose
           tictactoe[gameId] = {
             gameId,
             status: 'lobby',
-            winner: null,
-            loser: null,
             turn: user._id,
             created: new Date().getTime(),
             players: {
@@ -335,8 +369,54 @@ mongoose
         // 'start-game'
         // checks if game exists, if user is X, if players are 2
 
+        socket.on('3xT-make-turn', ({ gameId, i, j }) => {
+          const { user } = identification;
+          if (!user) return;
+          const game = tictactoe[gameId];
+          if (!game) return;
+          if (game.status !== 'progress') return;
+          if (game.turn !== user._id) return;
+          if (game.fields[i][j] !== 0) return;
+          clearTimeout(timeouts[gameId]);
+          game.fields[i][j] = game.players[user._id].symbol;
+          const result = check3xTFields(game.fields);
+          if (result) {
+            game.status = 'finished';
+            game.playersStatistics = { ...game.players };
+            game.winnerId = user._id;
+            game.path = result.path;
+            io.emit('3xT-game-finished', game);
+
+            timeouts[gameId] = setTimeout(() => {
+              io.emit('3xT-game-deleted', gameId);
+              delete tictactoe[gameId];
+              delete timeouts[gameId];
+            }, 30000);
+            return;
+          }
+
+          game.turn = Object.values(game.players).find((p) => p._id !== user._id)._id;
+          game.turnDate = new Date().getTime() + 20000;
+          io.emit('3xT-player-turn', { gameId, fields: game.fields, turn: game.turn, turnDate: game.turnDate });
+          timeouts[gameId] = setTimeout(() => {
+            game.status = 'finished';
+            game.playersStatistics = { ...game.players };
+            game.winnerId = user._id;
+            io.emit('3xT-game-finished', game);
+
+            timeouts[gameId] = setTimeout(() => {
+              io.emit('3xT-game-deleted', gameId);
+              delete tictactoe[gameId];
+              delete timeouts[gameId];
+            }, 30000);
+          }, 20000);
+        });
+
         // Online players handler [ TO DO ]
-        socket.on('disconnecting', () => {});
+        socket.on('disconnecting', () => {
+          const { user } = identification;
+          if (!user) return;
+        });
       });
     });
 

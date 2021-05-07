@@ -69,6 +69,97 @@
   height: min-content;
   padding-top: 0.8rem;
   padding-bottom: 0.8rem;
+  position: relative;
+}
+
+.board .path0 {
+  background: royalblue;
+  position: absolute;
+  width: 100%;
+  height: 0.2rem;
+  top: 22%;
+  right: 0;
+  opacity: 0.8;
+}
+
+.board .path1 {
+  background: royalblue;
+  position: absolute;
+  width: 100%;
+  height: 0.2rem;
+  top: 49%;
+  right: 0;
+  opacity: 0.8;
+}
+
+.board .path2 {
+  background: royalblue;
+  position: absolute;
+  width: 100%;
+  height: 0.2rem;
+  top: 78%;
+  right: 0;
+  opacity: 0.8;
+}
+
+.board .path3 {
+  background: royalblue;
+  position: absolute;
+  width: 0.2rem;
+  height: 100%;
+  top: 0;
+  left: 15.5%;
+  opacity: 0.8;
+}
+
+.board .path4 {
+  background: royalblue;
+  position: absolute;
+  width: 0.2rem;
+  height: 100%;
+  top: 0;
+  left: 47%;
+  opacity: 0.8;
+}
+
+.board .path5 {
+  background: royalblue;
+  position: absolute;
+  width: 0.2rem;
+  height: 100%;
+  top: 0;
+  left: 79%;
+  opacity: 0.8;
+}
+
+.board .path6 {
+  width: 0.2rem;
+  height: 100%;
+  background: royalblue;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  -webkit-transform: translateX(-0.2rem) rotate(-45deg);
+          transform: translateX(-0.2rem) rotate(-45deg);
+  opacity: 0.8;
+}
+
+.board .path7 {
+  width: 0.2rem;
+  height: 100%;
+  background: royalblue;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  -webkit-transform: translateX(-0.2rem) rotate(45deg);
+          transform: translateX(-0.2rem) rotate(45deg);
+  opacity: 0.8;
 }
 
 .board .board-field {
@@ -78,6 +169,31 @@
   border-right: 2px solid rgba(66, 102, 150, 0.8);
   border-top: 2px solid rgba(66, 102, 150, 0.8);
   vertical-align: top;
+  position: relative;
+}
+
+.board .board-field.empty {
+  cursor: pointer;
+}
+
+.board .board-field.empty:hover {
+  background: rgba(124, 151, 240, 0.8);
+}
+
+.board .board-field.O svg {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+.board .board-field svg {
+  width: 2.5rem;
+  height: 2.5rem;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  margin: auto;
 }
 
 .board .board-field:nth-child(3n) {
@@ -97,22 +213,46 @@
 }
 
 .game-players .game-player .game-avatar {
+  position: relative;
   border-radius: 50%;
   width: 3.2rem;
   height: 3.2rem;
   margin-left: 0.8rem;
   display: inline-block;
+  z-index: 1;
 }
 
 .game-players .game-player .game-player-info {
   display: inline-block;
-  margin-left: 0.8rem;
+  margin-left: 0.4rem;
   vertical-align: top;
 }
 
 .game-players .game-player .game-player-info .game-username {
   color: #426696;
   font-weight: 600;
+}
+
+.game-players .game-player .game-player-info .game-turn-timer {
+  margin-top: 0.1rem;
+  font-size: 0.9rem;
+  color: #fff;
+  background: #225dc9;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  padding: 0.05rem 0.4rem 0.15rem 1.15rem;
+  margin-left: -1rem;
+  border-bottom-right-radius: 0.4rem;
+  border-top-right-radius: 0.4rem;
+}
+
+.game-players .game-player .game-player-info .game-turn-timer svg {
+  width: 1rem;
+  height: 1rem;
+  margin-bottom: 0.05rem;
+  -webkit-animation: game-timeout-turn-rotation 1s infinite linear;
+          animation: game-timeout-turn-rotation 1s infinite linear;
 }
 
 .game-controllers {
@@ -239,6 +379,36 @@
   }
   100% {
     color: #1d8ccc;
+  }
+}
+
+@-webkit-keyframes game-timeout-turn-rotation {
+  0% {
+    -webkit-transform: rotate(359deg) scale(1);
+            transform: rotate(359deg) scale(1);
+  }
+  50% {
+    -webkit-transform: rotate(180deg) scale(1.1);
+            transform: rotate(180deg) scale(1.1);
+  }
+  100% {
+    -webkit-transform: rotate(0deg) scale(1);
+            transform: rotate(0deg) scale(1);
+  }
+}
+
+@keyframes game-timeout-turn-rotation {
+  0% {
+    -webkit-transform: rotate(359deg) scale(1);
+            transform: rotate(359deg) scale(1);
+  }
+  50% {
+    -webkit-transform: rotate(180deg) scale(1.1);
+            transform: rotate(180deg) scale(1.1);
+  }
+  100% {
+    -webkit-transform: rotate(0deg) scale(1);
+            transform: rotate(0deg) scale(1);
   }
 }
 /*# sourceMappingURL=style.css.map */

@@ -1,9 +1,14 @@
-import { SyncIcon } from '@primer/octicons-react';
+import { CircleIcon, SyncIcon, XIcon } from '@primer/octicons-react';
 import ReactMomentCountDown from 'react-moment-countdown';
-import { TTT_leaveLobby } from '../../../../utils/api';
+import { TTT_leaveLobby, TTT_makeTurn } from '../../../../utils/api';
 import { avatars } from '../../../../utils/constants';
 import { useResizeDetector } from 'react-resize-detector';
 import { useEffect } from 'react';
+
+const symbols = {
+  X: () => <XIcon size="medium" />,
+  O: () => <CircleIcon size="big" />,
+};
 
 const ActiveGame = ({ game, auth, setActiveGameHeight }) => {
   const { height: activeGameHeight, ref: activeGameRef } = useResizeDetector();
@@ -15,28 +20,57 @@ const ActiveGame = ({ game, auth, setActiveGameHeight }) => {
   return (
     <div key={game.gameId} className="active-game-card" ref={activeGameRef}>
       <div className="game-players">
-        {Object.entries(game.players).map(([playerId, player]) => (
-          <div key={playerId} className="game-player">
-            <img className="game-avatar" src={avatars[player.avatar]} alt="" />
-            <div className="game-player-info">
-              <p className="game-username">
-                [{player.symbol}] {player.username}
-              </p>
-            </div>
-          </div>
-        ))}
+        {game.status === 'finished'
+          ? Object.entries(game.playersStatistics).map(([playerId, player]) => (
+              <div key={playerId} className="game-player">
+                <img className="game-avatar" src={avatars[player.avatar]} alt="" />
+                <div className="game-player-info">
+                  <p className="game-username">
+                    [{player.symbol}] {player.username}
+                  </p>
+                  {auth.user._id === game.winnerId && <p>Winner</p>}
+                </div>
+              </div>
+            ))
+          : Object.entries(game.players).map(([playerId, player]) => (
+              <div key={playerId} className="game-player">
+                <img className="game-avatar" src={avatars[player.avatar]} alt="" />
+                <div className="game-player-info">
+                  <p className="game-username">
+                    [{player.symbol}] {player.username}
+                  </p>
+                  {game.status === 'progress' && game.turn === player._id && (
+                    <div className="game-turn-timer">
+                      <SyncIcon size="small" />{' '}
+                      <ReactMomentCountDown toDate={new Date(game.turnDate)} targetFormatMask="ss" />
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
       </div>
       <div className="board">
         {game.fields.map((row, i) => {
           return row.map((field, j) => {
             const isEmpty = field === 0;
             return (
-              <div className="board-field" key={`${i}-${j}`}>
-                {!isEmpty && field}
+              <div
+                className={`board-field ${
+                  field === 0 ? (game.status === 'progress' && game.turn === auth.user._id ? 'empty' : '') : field
+                }`}
+                key={`${i}-${j}`}
+                onClick={() => {
+                  if (game.status === 'progress' && game.turn === auth.user._id) {
+                    TTT_makeTurn(game.gameId, i, j);
+                  }
+                }}
+              >
+                {!isEmpty && symbols[field]()}
               </div>
             );
           });
         })}
+        {typeof game.path === 'number' && <div className={`path${game.path}`} />}
       </div>
       <div className="game-controllers">
         {game.status === 'lobby' &&

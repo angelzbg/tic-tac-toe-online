@@ -1,5 +1,5 @@
 import './styles/style.css';
-import { SyncIcon } from '@primer/octicons-react';
+import { CircleIcon, SyncIcon, XIcon } from '@primer/octicons-react';
 import ReactMomentCountDown from 'react-moment-countdown';
 import { useSelector } from 'react-redux';
 import ActiveGame from './activegame';
@@ -8,12 +8,17 @@ import { avatars } from '../../../utils/constants';
 import { TTT_createGame, TTT_joinLobby, TTT_subscribe, TTT_unsubscribe } from '../../../utils/api';
 import { useEffect, useState } from 'react';
 
+const symbols = {
+  X: () => <XIcon size="medium" />,
+  O: () => <CircleIcon size="big" />,
+};
+
 const TicTacToeGames = () => {
   const history = useHistory();
   const [activeGameHeight, setActiveGameHeight] = useState(0);
   const { tictactoe, auth } = useSelector((store) => store);
   const activeGame = auth.user ? tictactoe.games[tictactoe.activeGame] : null;
-  const canCreate = !activeGame || !!activeGame.winner;
+  const canCreate = !activeGame || activeGame.status === 'finished';
   const games = Object.values(tictactoe.games).sort((a, b) => b.created - a.created);
 
   useEffect(() => {
@@ -38,31 +43,44 @@ const TicTacToeGames = () => {
           return (
             <div key={game.gameId} className="game-card">
               <div className="game-players">
-                {Object.entries(game.players).map(([playerId, player]) => (
-                  <div key={playerId} className="game-player">
-                    <img className="game-avatar" src={avatars[player.avatar]} alt="" />
-                    <div className="game-player-info">
-                      <p className="game-username">
-                        [{player.symbol}] {player.username}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+                {game.status === 'finished'
+                  ? Object.entries(game.playersStatistics).map(([playerId, player]) => (
+                      <div key={playerId} className="game-player">
+                        <img className="game-avatar" src={avatars[player.avatar]} alt="" />
+                        <div className="game-player-info">
+                          <p className="game-username">
+                            [{player.symbol}] {player.username}
+                          </p>
+                          {auth.user._id === game.winnerId && <p>Winner</p>}
+                        </div>
+                      </div>
+                    ))
+                  : Object.entries(game.players).map(([playerId, player]) => (
+                      <div key={playerId} className="game-player">
+                        <img className="game-avatar" src={avatars[player.avatar]} alt="" />
+                        <div className="game-player-info">
+                          <p className="game-username">
+                            [{player.symbol}] {player.username}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
               </div>
               <div className="board">
                 {game.fields.map((row, i) => {
                   return row.map((field, j) => {
                     const isEmpty = field === 0;
                     return (
-                      <div className="board-field" key={`${i}-${j}`}>
-                        {!isEmpty && field}
+                      <div className={`board-field ${field}`} key={`${i}-${j}`}>
+                        {!isEmpty && symbols[field]()}
                       </div>
                     );
                   });
                 })}
+                {typeof game.path === 'number' && <div className={`path${game.path}`} />}
               </div>
               <div className="game-controllers">
-                {!activeGame && Object.keys(game.players).length < 2 && (
+                {!activeGame && Object.keys(game.players).length < 2 && game.status === 'lobby' && (
                   <button
                     className="join-button"
                     onClick={() => (auth.user ? TTT_joinLobby(game.gameId) : history.push('/login'))}
