@@ -66,7 +66,7 @@ const TicTacToeGames = () => {
                       </div>
                     ))}
               </div>
-              <div className="board">
+              <div className="board" style={{ transform: `rotate(${game.rotate}deg)` }}>
                 {game.fields.map((row, i) => {
                   return row.map((field, j) => {
                     const isEmpty = field === 0;
