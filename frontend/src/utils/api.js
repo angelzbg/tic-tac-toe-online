@@ -11,7 +11,7 @@ import {
   TTT_playerTurn,
   TTT_removePlayerFromlobby,
   TTT_resetState,
-  TTT_setGames,
+  TTT_setGames, TTT_setGameStarted,
 } from '../store/actions/TTTActions';
 
 export const getCurrentUser = () => store.getState().auth.user;
@@ -28,6 +28,7 @@ export const TTT_createGame = () => socket.emit('3xT-create-lobby');
 export const TTT_joinLobby = (gameId) => socket.emit('3xT-join-lobby', { gameId });
 export const TTT_leaveLobby = (gameId) => socket.emit('3xT-leave-lobby', { gameId });
 export const TTT_makeTurn = (gameId, i, j) => socket.emit('3xT-make-turn', { gameId, i, j });
+export const TTT_startGAme = (gameId) => socket.emit('3xT-start-game', gameId);
 export const TTT_subscribe = () => {
   socket.on('3xT-received-games', (payload) => {
     store.dispatch(TTT_setGames({ games: payload, user: getCurrentUser() }));
@@ -55,6 +56,10 @@ export const TTT_subscribe = () => {
 
   socket.on('3xT-game-finished', (payload) => {
     store.dispatch(TTT_gameFinished(payload));
+  });
+
+  socket.on('3xT-game-started', (payload) => {
+    store.dispatch(TTT_setGameStarted(payload));
   });
 
   socket.emit('3xT-subscribe');

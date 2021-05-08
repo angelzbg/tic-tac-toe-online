@@ -39,6 +39,11 @@ export const TTT_resetState = () => ({
   type: ACTION_TYPES.TTT_RESET_STATE,
 });
 
+export const TTT_setGameStarted = (payload) => ({
+  type: ACTION_TYPES.TTT_START_GAME,
+  payload
+})
+
 // // sending to all clients except sender
 // socket.broadcast.emit('message', "this is a test");
 
