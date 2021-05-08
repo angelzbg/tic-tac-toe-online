@@ -259,7 +259,7 @@ mongoose
   })
   .then(() => {
     io.on('connection', (socket) => {
-      const identification = { user: null };
+      const identification = { user: null, attachedListeners: [] };
 
       socket.on('identify', (data) => identifySocket(identification, data));
 
@@ -277,6 +277,10 @@ mongoose
 
       socket.on('3xT-subscribe', () => {
         socket.emit('3xT-received-games', tictactoe);
+
+        const { attachedListeners } = identification;
+        if (attachedListeners.includes('3xT-subscribe')) return;
+        attachedListeners.push('3xT-subscribe');
 
         socket.on('3xT-create-lobby', () => {
           const { user } = identification;
