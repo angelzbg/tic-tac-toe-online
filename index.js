@@ -220,7 +220,7 @@ const check3xTFields = (fields = []) => {
   for (let i = 0; i < 3; i++) {
     const rowCheck = [...new Set(fields[i])];
     if (rowCheck.length === 1 && rowCheck[0] !== 0) {
-      return { winner: rowCheck[0], path: 0 };
+      return { winner: rowCheck[0], path: i };
     }
 
     const colCheck = [...new Set(fields.reduce((col, row) => [...col, row[i]], []))];
@@ -369,6 +369,33 @@ mongoose
 
         // 'start-game'
         // checks if game exists, if user is X, if players are 2
+        socket.on('3xT-start-game', (gameId) => {
+          const { user } = identification;
+          if (!user) return;
+          const game = tictactoe[gameId];
+          if (!game) return;
+          if (!game.players[user._id]) return;
+          if (game.players[user._id].symbol !== 'X') return;
+          if (game.status !== 'lobby') return;
+          if (Object.keys(game.players).length !== 2) return;
+          clearTimeout(timeouts[gameId]);
+          game.status = 'progress';
+          game.turnDate = new Date().getTime() + 20000;
+          const OPlayerId = Object.values(game.players).find((p) => p._id !== user._id)._id;
+          io.emit('3xT-game-started', { gameId, status: game.status, turnDate: game.turnDate });
+          timeouts[gameId] = setTimeout(() => {
+            game.status = 'finished';
+            game.playersStatistics = { ...game.players };
+            game.winnerId = OPlayerId;
+            io.emit('3xT-game-finished', game);
+
+            timeouts[gameId] = setTimeout(() => {
+              io.emit('3xT-game-deleted', gameId);
+              delete tictactoe[gameId];
+              delete timeouts[gameId];
+            }, 30000);
+          }, 20000);
+        });
 
         socket.on('3xT-make-turn', ({ gameId, i, j }) => {
           const { user } = identification;
@@ -388,6 +415,18 @@ mongoose
             game.path = result.path;
             io.emit('3xT-game-finished', game);
 
+            timeouts[gameId] = setTimeout(() => {
+              io.emit('3xT-game-deleted', gameId);
+              delete tictactoe[gameId];
+              delete timeouts[gameId];
+            }, 30000);
+            return;
+          }
+
+          if (!game.fields.reduce((acc, row) => [...acc, ...row.filter((el) => el === 0)], []).length) {
+            game.status = 'finished';
+            game.playersStatistics = { ...game.players };
+            io.emit('3xT-game-finished', game);
             timeouts[gameId] = setTimeout(() => {
               io.emit('3xT-game-deleted', gameId);
               delete tictactoe[gameId];

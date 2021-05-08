@@ -6,34 +6,62 @@ import ActiveGame from './activegame';
 import { useHistory } from 'react-router';
 import { avatars } from '../../../utils/constants';
 import { TTT_createGame, TTT_joinLobby, TTT_subscribe, TTT_unsubscribe } from '../../../utils/api';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 
 const symbols = {
   X: () => <XIcon size="medium" />,
   O: () => <CircleIcon size="big" />,
 };
 
+const resizeMe = () => {
+  const container = document.querySelector('.container');
+  if (container) {
+    const rightSide = document.querySelector('.app-right-side');
+    const rightSideHeight = rightSide.clientHeight;
+    const header = document.querySelector('.header');
+    const headerHeight = header.clientHeight + +window.getComputedStyle(header).marginTop.split('px')[0];
+    const activeGameCard = document.querySelector('.active-game-card');
+    const activeGameCardHeight = activeGameCard
+      ? activeGameCard.clientHeight + +window.getComputedStyle(activeGameCard).marginTop.split('px')[0]
+      : 0;
+    return (
+      rightSideHeight -
+      headerHeight -
+      activeGameCardHeight -
+      +window.getComputedStyle(container).marginTop.split('px')[0]
+    );
+  }
+
+  return 0;
+};
+
 const TicTacToeGames = () => {
   const history = useHistory();
-  const [activeGameHeight, setActiveGameHeight] = useState(0);
   const { tictactoe, auth } = useSelector((store) => store);
+  const [height, setHeight] = useState(0);
   const activeGame = auth.user ? tictactoe.games[tictactoe.activeGame] : null;
-  const canCreate = !activeGame || activeGame.status === 'finished';
+  const canCreate = !activeGame;
   const games = Object.values(tictactoe.games).sort((a, b) => b.created - a.created);
 
   useEffect(() => {
     TTT_subscribe();
+    const resize = () => setHeight(resizeMe());
+    window.addEventListener('resize', resize);
     return () => {
       TTT_unsubscribe();
+      window.removeEventListener('resize', resize);
     };
-  }, []);
+  }, [setHeight]);
+
+  useLayoutEffect(() => {
+    setHeight(resizeMe());
+  }, [setHeight, activeGame]);
 
   //console.log(activeGame);
-  const containerHeight = activeGame ? `calc(80% - ${activeGameHeight || 0}px - 1.2rem)` : '80%';
   return (
     <>
-      {activeGame && <ActiveGame {...{ game: activeGame, auth, setActiveGameHeight }} />}
-      <div className="container scroll-h" style={{ height: containerHeight }}>
+      {activeGame && <ActiveGame {...{ game: activeGame, auth }} />}
+      <div className="container scroll-h" style={{ height: height || 300 }}>
         {canCreate && (
           <button className="create-game" onClick={() => (auth.user ? TTT_createGame() : history.push('/login'))}>
             Create Game
@@ -48,10 +76,17 @@ const TicTacToeGames = () => {
                       <div key={playerId} className="game-player">
                         <img className="game-avatar" src={avatars[player.avatar]} alt="" />
                         <div className="game-player-info">
-                          <p className="game-username">
-                            [{player.symbol}] {player.username}
-                          </p>
-                          {auth.user._id === game.winnerId && <p>Winner</p>}
+                          <div tooltip={player.username}>
+                            <p className="game-username">
+                              [{player.symbol}]{' '}
+                              {(({ username }) => (
+                                <span style={{ fontSize: `calc(0.99rem - (0.03rem * ${username.length}))` }}>
+                                  {username}
+                                </span>
+                              ))({ ...{ username: player.username } })}
+                            </p>
+                          </div>
+                          {playerId === game.winnerId && <p>winner</p>}
                         </div>
                       </div>
                     ))
@@ -59,9 +94,16 @@ const TicTacToeGames = () => {
                       <div key={playerId} className="game-player">
                         <img className="game-avatar" src={avatars[player.avatar]} alt="" />
                         <div className="game-player-info">
-                          <p className="game-username">
-                            [{player.symbol}] {player.username}
-                          </p>
+                          <div tooltip={player.username}>
+                            <p className="game-username">
+                              [{player.symbol}]{' '}
+                              {(({ username }) => (
+                                <span style={{ fontSize: `calc(0.99rem - (0.03rem * ${username.length}))` }}>
+                                  {username}
+                                </span>
+                              ))({ ...{ username: player.username } })}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     ))}

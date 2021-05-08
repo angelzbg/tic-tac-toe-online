@@ -86,58 +86,6 @@
     font-size: 1.2rem;
   }
 
-  .profile-score {
-    font-size: 1rem;
-    cursor: default;
-    margin-top: 0.2rem;
-    width: max-content;
-    display: inline-block;
-
-    .profile-wins,
-    .profile-losses {
-      border-radius: 1rem;
-      padding: 0.1rem 0.5rem 0.1rem 0.3rem;
-      color: #242424;
-      svg {
-        margin-bottom: 0.11rem;
-      }
-    }
-
-    .profile-wins {
-      display: inline-block;
-      background: #98ff98;
-    }
-
-    .profile-losses {
-      margin-left: 0.25rem;
-      display: inline-block;
-      background: #ff8080;
-    }
-
-    .profile-rate {
-      font-size: 0.65rem;
-      margin-top: 0.25rem;
-      background: #ff8080;
-      width: 70%;
-      height: 16px;
-      border-radius: 7.5px;
-      border: 1.6px solid #222222;
-      display: inline-block;
-      .rate-indicator {
-        text-align: right;
-        padding-right: 1.6px;
-        margin-left: -0.8px;
-        margin-top: -0.5px;
-        height: 14px;
-        border-radius: 6.4rem;
-        background: #98ff98;
-        //background: #09dd73;
-        min-width: 16px;
-        font-weight: bold;
-      }
-    }
-  }
-
   .login-register {
     a {
       text-decoration: none;
