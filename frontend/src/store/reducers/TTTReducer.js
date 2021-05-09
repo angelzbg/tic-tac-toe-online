@@ -95,7 +95,6 @@ const gamesReducer = (state = initialState, { type, payload }) => {
       return { games: {}, activeGame: null };
     case ACTION_TYPES.TTT_START_GAME: {
       const { gameId, status, turnDate } = payload;
-      console.log(status)
       return {
         activeGame: state.activeGame,
         games: { ...state.games, [gameId]: { ...state.games[gameId], status, turnDate} },

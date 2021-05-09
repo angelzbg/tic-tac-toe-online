@@ -23,6 +23,7 @@ app.use(cors());
 
 const timeouts = {};
 const tictactoe = {};
+const activeSockets = {};
 
 // ------------- Middlewares [ START ]
 
@@ -173,11 +174,15 @@ app.post('/api/update-user', async (req, res) => {
 
     await User.findByIdAndUpdate(req.user._id, { avatar });
     res.status(200).json(respond(NETWORK_CODES_TYPES.SUCCESS, { avatar }));
+    const active = activeSockets[req.user.socketId];
+    if (active) {
+      active.user.avatar = avatar;
+      active.sockets?.forEach?.((s) => s.emit('updated-avatar', avatar));
+    }
     return;
   }
 
   res.status(200).json(respond(NETWORK_CODES_TYPES.ERROR, NETWORK_CODES.UNEXPECTED_ERROR));
-  return;
 });
 // Auth services ------------- [  END  ]
 
@@ -240,15 +245,56 @@ const check3xTFields = (fields = []) => {
   }
 };
 
-const identifySocket = (identification, { username, socketId }) => {
-  (async (identification, username, socketId) => {
-    const foundUser = await User.findOne({ username, socketId });
-    if (foundUser) {
-      identification.user = foundUser;
-      identification.user._id = foundUser._id.toString();
-    }
-  })(identification, username, socketId);
+const removeSocket = (socket, widthData) => {
+  const socketId = socket.data.socketId;
+  if (!socketId) return;
+
+  const index = activeSockets[socketId].sockets.findIndex(({ id }) => id === socket.id);
+  if (index !== -1) {
+    activeSockets[socketId].sockets.splice(index, 1);
+  }
+
+  if (!activeSockets[socketId].sockets.length) {
+    delete activeSockets[socketId];
+  }
+
+  if (widthData) {
+    socket.data = { attachedListeners: socket.data.attachedListeners };
+  }
 };
+
+const identifySocket = (socketId, socket) => {
+  if (!socketId) return;
+  if (socket.data.identifying || socket.data.socketId === socketId) return;
+  socket.data.identifying = true;
+
+  removeSocket(socket);
+
+  if (activeSockets[socketId]) {
+    socket.data.socketId = socketId;
+    activeSockets[socketId].sockets.push(socket);
+    socket.data.identifying = false;
+    socket.data.parent = activeSockets[socketId];
+    return;
+  }
+
+  (async (socketId, socket) => {
+    const user = await User.findOne({ socketId });
+    if (!user) return;
+    if (socket.disconnected) {
+      socket.data.identifying = false;
+      return;
+    }
+
+    user._id = user._id.toString();
+    activeSockets[socketId] = { user, sockets: [socket] };
+    socket.data.socketId = socketId;
+    socket.data.identifying = false;
+    socket.data.parent = activeSockets[socketId];
+  })(socketId, socket);
+};
+
+const unidentifySocket = (socket) => removeSocket(socket, true);
 
 mongoose
   .connect(MONGO_CONNECTION_STRING, {
@@ -259,31 +305,19 @@ mongoose
   })
   .then(() => {
     io.on('connection', (socket) => {
-      const identification = { user: null, attachedListeners: [] };
-
-      socket.on('identify', (data) => identifySocket(identification, data));
-
-      socket.on('avatar-change', (avatar) => {
-        const { user } = identification;
-        if (!user) return;
-        try {
-          const parsed = parseInt(avatar);
-          if (typeof parsed !== 'number') return;
-          user.avatar = parsed;
-        } catch (ex) {
-          user.avatar = 0;
-        }
-      });
+      socket.data.attachedListeners = [];
+      socket.on('identify', (socketId) => identifySocket(socketId, socket));
+      socket.on('unidentify', () => unidentifySocket(socket));
 
       socket.on('3xT-subscribe', () => {
         socket.emit('3xT-received-games', tictactoe);
 
-        const { attachedListeners } = identification;
+        const { attachedListeners } = socket.data;
         if (attachedListeners.includes('3xT-subscribe')) return;
         attachedListeners.push('3xT-subscribe');
 
         socket.on('3xT-create-lobby', () => {
-          const { user } = identification;
+          const user = socket.data?.parent?.user;
           if (!user) return;
 
           for (let game of Object.values(tictactoe)) {
@@ -324,8 +358,9 @@ mongoose
           }, 10 * 60000);
         });
 
-        socket.on('3xT-join-lobby', ({ gameId }) => {
-          const { user } = identification;
+        socket.on('3xT-join-lobby', ({ gameId } = {}) => {
+          if (!gameId) return;
+          const user = socket.data?.parent?.user;
           if (!user) return;
 
           for (let game of Object.values(tictactoe)) {
@@ -350,8 +385,9 @@ mongoose
           io.emit('3xT-player-joined', { joinedUser: tictactoe[gameId].players[user._id], gameId });
         });
 
-        socket.on('3xT-leave-lobby', ({ gameId }) => {
-          const { user } = identification;
+        socket.on('3xT-leave-lobby', ({ gameId } = {}) => {
+          if (!gameId) return;
+          const user = socket.data?.parent?.user;
           if (!user) return;
 
           let game = tictactoe[gameId];
@@ -372,7 +408,8 @@ mongoose
         });
 
         socket.on('3xT-start-game', (gameId) => {
-          const { user } = identification;
+          if (!gameId) return;
+          const user = socket.data?.parent?.user;
           if (!user) return;
           const game = tictactoe[gameId];
           if (!game) return;
@@ -399,8 +436,9 @@ mongoose
           }, 20000);
         });
 
-        socket.on('3xT-make-turn', ({ gameId, i, j }) => {
-          const { user } = identification;
+        socket.on('3xT-make-turn', ({ gameId, i, j } = {}) => {
+          if (!gameId) return;
+          const user = socket.data?.parent?.user;
           if (!user) return;
           const game = tictactoe[gameId];
           if (!game) return;
@@ -454,11 +492,7 @@ mongoose
           }, 20000);
         });
 
-        // Online players handler [ TO DO ]
-        socket.on('disconnecting', () => {
-          const { user } = identification;
-          if (!user) return;
-        });
+        socket.on('disconnecting', () => unidentifySocket(socket));
       });
     });
 

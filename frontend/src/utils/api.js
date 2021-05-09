@@ -1,6 +1,6 @@
 import { batch } from 'react-redux';
 import store from '../store';
-import { setAuthLoading, setAuthLogged, setUser } from '../store/actions/authActions';
+import { setAuthLoading, setAuthLogged, setUser, setUserAvatar } from '../store/actions/authActions';
 import { networkCall } from './utils';
 import { io } from 'socket.io-client';
 import {
@@ -23,6 +23,8 @@ const socketInfo = {
   disconnected: false,
   subscription: null,
 };
+
+socket.on('updated-avatar', (avatar) => store.dispatch(setUserAvatar(avatar)));
 
 // Tic Tac Toe [ START ]
 export const TTT_getLeaveToggle = () => {
@@ -97,7 +99,7 @@ socket.on('connect', () => {
     socketInfo.disconnected = false;
     const user = getCurrentUser();
     if (user) {
-      socket.emit('identify', { username: user.username, socketId: user.socketId });
+      socket.emit('identify', user.socketId);
     }
 
     if (socketInfo.subscription) {
@@ -118,6 +120,7 @@ socket.on('disconnect', () => {
 export const logOut = async () => {
   const response = await networkCall({ path: '/api/logout', method: 'GET' });
   if (response.success) {
+    socket.emit('unidentify');
     batch(() => {
       store.dispatch(setUser(null));
       store.dispatch(setAuthLogged(false));
@@ -129,7 +132,6 @@ export const logOut = async () => {
 
 export const updateUserAvatar = (avatar = 0) => {
   networkCall({ path: '/api/update-user', method: 'POST', body: { avatar } });
-  socket.emit('avatar-change', avatar);
 };
 
 export const getUserInfo = async () => {
@@ -139,7 +141,7 @@ export const getUserInfo = async () => {
       store.dispatch(setUser(response.success));
       store.dispatch(setAuthLogged(true));
       store.dispatch(setAuthLoading(false));
-      socket.emit('identify', { username: response.success.username, socketId: response.success.socketId });
+      socket.emit('identify', response.success.socketId);
     });
   } else {
     store.dispatch(setAuthLoading(false));
