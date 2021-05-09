@@ -371,8 +371,6 @@ mongoose
           io.emit('3xT-player-leave', { userId: user._id, gameId });
         });
 
-        // 'start-game'
-        // checks if game exists, if user is X, if players are 2
         socket.on('3xT-start-game', (gameId) => {
           const { user } = identification;
           if (!user) return;
@@ -397,7 +395,7 @@ mongoose
               io.emit('3xT-game-deleted', gameId);
               delete tictactoe[gameId];
               delete timeouts[gameId];
-            }, 30000);
+            }, 60000);
           }, 20000);
         });
 
@@ -423,7 +421,7 @@ mongoose
               io.emit('3xT-game-deleted', gameId);
               delete tictactoe[gameId];
               delete timeouts[gameId];
-            }, 30000);
+            }, 60000);
             return;
           }
 
@@ -435,7 +433,7 @@ mongoose
               io.emit('3xT-game-deleted', gameId);
               delete tictactoe[gameId];
               delete timeouts[gameId];
-            }, 30000);
+            }, 60000);
             return;
           }
 
@@ -452,7 +450,7 @@ mongoose
               io.emit('3xT-game-deleted', gameId);
               delete tictactoe[gameId];
               delete timeouts[gameId];
-            }, 30000);
+            }, 60000);
           }, 20000);
         });
 
