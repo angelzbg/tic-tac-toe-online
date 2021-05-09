@@ -1,5 +1,5 @@
 import './styles/style.css';
-import { ArrowUpIcon, ArrowDownIcon, GearIcon } from '@primer/octicons-react';
+import { GearIcon } from '@primer/octicons-react';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -9,7 +9,6 @@ import UserMenu from './UserMenu';
 const UserCard = () => {
   const { user, isLogged } = useSelector((store) => store.auth);
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const percentage = `${user?.rate || 0}%`;
 
   return (
     <div className="user-card">

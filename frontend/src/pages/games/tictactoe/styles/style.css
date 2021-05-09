@@ -341,7 +341,7 @@
   -webkit-animation: change-background 3s infinite;
           animation: change-background 3s infinite;
   color: #1ddb56;
-  bottom: 0rem;
+  bottom: 0.1rem;
   left: 2.4rem;
 }
 

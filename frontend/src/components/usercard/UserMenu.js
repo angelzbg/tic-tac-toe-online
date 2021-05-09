@@ -1,13 +1,10 @@
 import { SignOutIcon, HubotIcon } from '@primer/octicons-react';
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { setUserAvatar } from '../../store/actions/authActions';
 import { logOut, updateUserAvatar } from '../../utils/api';
 import AvatarsModal from '../modals/avatars';
 import { handleClickOutside } from './utils';
 
 const UserMenu = ({ setMenuOpen }) => {
-  const dispatch = useDispatch();
   const userMenuRef = useRef(null);
   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
 
@@ -28,7 +25,6 @@ const UserMenu = ({ setMenuOpen }) => {
           {...{
             onSelect: (avatar) => {
               updateUserAvatar(avatar);
-              dispatch(setUserAvatar(avatar));
               setAvatarModalOpen(false);
             },
             onCancel: () => setAvatarModalOpen(false),
