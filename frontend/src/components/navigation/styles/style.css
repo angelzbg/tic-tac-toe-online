@@ -4,11 +4,8 @@
   margin: auto;
   margin-top: 0;
   text-align: center;
-  width: -webkit-fit-content;
-  width: -moz-fit-content;
   width: fit-content;
 }
-
 .navigation a {
   display: block;
   margin: 2rem 0;
@@ -17,12 +14,10 @@
   font-weight: 600;
   font-size: 1.5rem;
   text-align: left;
-  width: -webkit-fit-content;
-  width: -moz-fit-content;
   width: fit-content;
 }
-
 .navigation a svg {
   margin-bottom: 3px;
 }
+
 /*# sourceMappingURL=style.css.map */

@@ -5,12 +5,26 @@
   overflow-x: hidden;
   padding-right: 5px;
 }
-
+.container .create-game {
+  background: #3873f1;
+  border: none;
+  outline: none;
+  border-radius: 1rem;
+  padding: 0.3rem 0.4rem;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
 @media only screen and (max-width: 1100px) {
   .container {
     margin-left: calc(0.5rem + 10px);
     margin-right: 0.5rem;
     margin-top: 0.7rem;
+  }
+  .container .create-game {
+    margin-left: 0.4rem;
+    padding: 0.4rem;
+    font-size: 1rem;
   }
 }
 
@@ -29,48 +43,32 @@
 
 .game-card {
   position: relative;
-  display: -ms-grid;
   display: grid;
-  -ms-grid-columns: 40% 30% 20%;
-      grid-template-columns: 40% 30% 20%;
-  -webkit-column-gap: 1rem;
-          column-gap: 1rem;
+  grid-template-columns: 40% 30% 20%;
+  column-gap: 1rem;
   width: 100%;
-  height: -webkit-fit-content;
-  height: -moz-fit-content;
   height: fit-content;
   border-radius: 1rem;
   margin-bottom: 2rem;
-  -webkit-box-shadow: rgba(149, 157, 165, 0.2) 0 8px 12px;
-          box-shadow: rgba(149, 157, 165, 0.2) 0 8px 12px;
-  background: -webkit-gradient(linear, left top, right bottom, from(rgba(255, 255, 255, 0.7)), to(rgba(255, 255, 255, 0.3)));
+  box-shadow: rgba(149, 157, 165, 0.2) 0 8px 12px;
   background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
 }
 
 .active-game-card {
   margin-top: 1.2rem;
-  display: -ms-grid;
   display: grid;
-  -ms-grid-columns: 40% 30% 20%;
-      grid-template-columns: 40% 30% 20%;
-  -webkit-column-gap: 1rem;
-          column-gap: 1rem;
+  grid-template-columns: 40% 30% 20%;
+  column-gap: 1rem;
   width: calc(100% - 3rem - 15px);
-  height: -webkit-fit-content;
-  height: -moz-fit-content;
   height: fit-content;
   border-radius: 1rem;
   position: relative;
-  -webkit-box-shadow: rgba(149, 157, 165, 0.2) 0 8px 12px;
-          box-shadow: rgba(149, 157, 165, 0.2) 0 8px 12px;
-  background: -webkit-gradient(linear, left top, right bottom, from(rgba(42, 122, 241, 0.7)), to(rgba(91, 196, 223, 0.3)));
+  box-shadow: rgba(149, 157, 165, 0.2) 0 8px 12px;
   background: linear-gradient(to right bottom, rgba(42, 122, 241, 0.7), rgba(91, 196, 223, 0.3));
 }
-
 .active-game-card .game-players .game-player .game-player-info .game-username {
   color: #ffffff;
 }
-
 .active-game-card .leave-toggle {
   position: absolute;
   width: 2.2rem;
@@ -80,46 +78,37 @@
   top: -1.4rem;
   cursor: pointer;
 }
-
 .active-game-card .leave-toggle div {
   width: 0.8rem;
   height: 0.8rem;
   margin-top: 0.2rem;
   border-radius: 50%;
 }
-
 .active-game-card .leave-toggle.activated {
   background: #0447a0;
 }
-
 .active-game-card .leave-toggle.activated div {
   background: #237cf1;
   margin-right: 0.2rem;
   margin-left: auto;
 }
-
 .active-game-card .leave-toggle.activated:hover div {
   background: #8f9296;
 }
-
 .active-game-card .leave-toggle.deactivated {
   background: rgba(86, 98, 110, 0.8);
 }
-
 .active-game-card .leave-toggle.deactivated div {
   background: #8f9296;
   margin-left: 0.2rem;
   margin-right: auto;
 }
-
 .active-game-card .leave-toggle.deactivated:hover div {
   background: #237cf1;
 }
-
 @media only screen and (max-width: 1100px) {
   .active-game-card {
-    -ms-grid-columns: 35% 35% 20%;
-        grid-template-columns: 35% 35% 20%;
+    grid-template-columns: 35% 35% 20%;
     width: calc(100% - 1rem - 25px);
     margin-left: calc(0.5rem + 10px);
     margin-right: calc(0.5rem + 15px);
@@ -136,7 +125,6 @@
   border-radius: 0.4rem;
   overflow: hidden;
 }
-
 .board .path0 {
   background: royalblue;
   position: absolute;
@@ -146,7 +134,6 @@
   right: 0;
   opacity: 0.8;
 }
-
 .board .path1 {
   background: royalblue;
   position: absolute;
@@ -156,7 +143,6 @@
   right: 0;
   opacity: 0.8;
 }
-
 .board .path2 {
   background: royalblue;
   position: absolute;
@@ -166,7 +152,6 @@
   right: 0;
   opacity: 0.8;
 }
-
 .board .path3 {
   background: royalblue;
   position: absolute;
@@ -176,7 +161,6 @@
   left: 14.8%;
   opacity: 0.8;
 }
-
 .board .path4 {
   background: royalblue;
   position: absolute;
@@ -186,7 +170,6 @@
   left: 47.9%;
   opacity: 0.8;
 }
-
 .board .path5 {
   background: royalblue;
   position: absolute;
@@ -196,7 +179,6 @@
   left: 81.5%;
   opacity: 0.8;
 }
-
 .board .path6 {
   width: 0.2rem;
   height: 150%;
@@ -207,11 +189,9 @@
   bottom: 0;
   left: 0;
   margin: auto;
-  -webkit-transform: translateX(-0.14rem) rotate(-45deg);
-          transform: translateX(-0.14rem) rotate(-45deg);
+  transform: translateX(-0.14rem) rotate(-45deg);
   opacity: 0.8;
 }
-
 .board .path7 {
   width: 0.2rem;
   height: 150%;
@@ -222,11 +202,9 @@
   bottom: 0;
   left: 0;
   margin: auto;
-  -webkit-transform: translateX(-0.06rem) rotate(45deg);
-          transform: translateX(-0.06rem) rotate(45deg);
+  transform: translateX(-0.06rem) rotate(45deg);
   opacity: 0.8;
 }
-
 .board .board-field {
   display: inline-block;
   height: 3rem;
@@ -236,26 +214,21 @@
   vertical-align: top;
   position: relative;
 }
-
 .board .board-field.empty {
   cursor: pointer;
   background: rgba(124, 238, 171, 0.2);
 }
-
 .board .board-field.empty svg {
   color: #fff;
 }
-
 .board .board-field.empty svg.O {
   width: 1.8rem;
   height: 1.8rem;
 }
-
 .board .board-field.O svg {
   width: 1.8rem;
   height: 1.8rem;
 }
-
 .board .board-field svg {
   width: 2.5rem;
   height: 2.5rem;
@@ -266,26 +239,21 @@
   right: 0;
   margin: auto;
 }
-
 .board .board-field:nth-child(3n) {
   border-right: none;
 }
-
-.board .board-field:nth-child(-n + 3) {
+.board .board-field:nth-child(-n+3) {
   border-top: none;
 }
 
 .game-players .game-player {
   margin-top: 0.8rem;
 }
-
 .game-players .game-player:first-child {
   margin-top: 0.4rem;
 }
-
 .game-players .game-player .game-avatar {
-  -webkit-box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-          box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   position: relative;
   border-radius: 50%;
   width: 3.2rem;
@@ -294,13 +262,11 @@
   display: inline-block;
   z-index: 1;
 }
-
 .game-players .game-player .game-avatar img {
   width: 3.2rem;
   height: 3.2rem;
   border-radius: 50%;
 }
-
 .game-players .game-player .game-avatar .avatar-symbol {
   position: absolute;
   bottom: -0.5rem;
@@ -310,15 +276,12 @@
   background: rgba(70, 130, 180, 0.7);
   border-radius: 50%;
   color: #1ddb56;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-          box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
-
 .game-players .game-player .game-avatar .avatar-symbol.O svg {
   width: 0.7rem;
   height: 0.7rem;
 }
-
 .game-players .game-player .game-avatar .avatar-symbol svg {
   position: absolute;
   top: 0;
@@ -329,37 +292,18 @@
   width: 1rem;
   height: 1rem;
 }
-
 .game-players .game-player .game-avatar .avatar-winner {
-  -webkit-box-shadow: rgba(0, 0, 0, 0.24) 0px 2px 2px;
-          box-shadow: rgba(0, 0, 0, 0.24) 0px 2px 2px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 2px 2px;
   position: absolute;
   width: 1.2rem;
   height: 1.2rem;
   border-radius: 50%;
   background: steelblue;
-  -webkit-animation: change-background 3s infinite;
-          animation: change-background 3s infinite;
+  animation: change-background 3s infinite;
   color: #1ddb56;
   bottom: 0.1rem;
   left: 2.4rem;
 }
-
-@-webkit-keyframes change-background {
-  0% {
-    background-color: steelblue;
-  }
-  20% {
-    background-color: #4448b3;
-  }
-  80% {
-    background-color: rgba(70, 130, 180, 0.9);
-  }
-  100% {
-    background-color: steelblue;
-  }
-}
-
 @keyframes change-background {
   0% {
     background-color: steelblue;
@@ -374,33 +318,16 @@
     background-color: steelblue;
   }
 }
-
-@-webkit-keyframes rocket-move {
-  0% {
-    -webkit-transform: translateX(-15%) translateY(-5%);
-            transform: translateX(-15%) translateY(-5%);
-    color: #1ddb56;
-  }
-  100% {
-    -webkit-transform: translateX(15%) translateY(5%);
-            transform: translateX(15%) translateY(5%);
-    color: #0dcee7;
-  }
-}
-
 @keyframes rocket-move {
   0% {
-    -webkit-transform: translateX(-15%) translateY(-5%);
-            transform: translateX(-15%) translateY(-5%);
+    transform: translateX(-15%) translateY(-5%);
     color: #1ddb56;
   }
   100% {
-    -webkit-transform: translateX(15%) translateY(5%);
-            transform: translateX(15%) translateY(5%);
+    transform: translateX(15%) translateY(5%);
     color: #0dcee7;
   }
 }
-
 .game-players .game-player .game-avatar .avatar-winner svg {
   width: 0.7rem;
   height: 0.7rem;
@@ -411,17 +338,14 @@
   left: 0;
   margin: auto;
   z-index: 2;
-  -webkit-animation: rocket-move 1s ease-in-out infinite alternate;
-          animation: rocket-move 1s ease-in-out infinite alternate;
+  animation: rocket-move 1s ease-in-out infinite alternate;
 }
-
 .game-players .game-player .game-player-info {
   display: inline-block;
   margin-left: 0.2rem;
   vertical-align: top;
   position: relative;
 }
-
 .game-players .game-player .game-player-info .game-username {
   font-size: 0.9rem;
   color: #426696;
@@ -431,27 +355,22 @@
   overflow: hidden;
   max-width: 13.4vw;
 }
-
 .game-players .game-player .game-player-info .game-turn-timer {
   margin-top: 0.1rem;
   font-size: 0.9rem;
   color: #fff;
   background: #225dc9;
-  width: -webkit-fit-content;
-  width: -moz-fit-content;
   width: fit-content;
   padding: 0.05rem 0.4rem 0.15rem 1.15rem;
   margin-left: -1rem;
   border-bottom-right-radius: 0.4rem;
   border-top-right-radius: 0.4rem;
 }
-
 .game-players .game-player .game-player-info .game-turn-timer svg {
   width: 1rem;
   height: 1rem;
   margin-bottom: 0.05rem;
-  -webkit-animation: game-timeout-turn-rotation 1s infinite linear;
-          animation: game-timeout-turn-rotation 1s infinite linear;
+  animation: game-timeout-turn-rotation 1s infinite linear;
 }
 
 .game-controllers {
@@ -460,7 +379,6 @@
   top: 0.4rem;
   right: 0.4rem;
 }
-
 .game-controllers button {
   margin-top: 0.4rem;
   margin-right: 0.2rem;
@@ -475,33 +393,16 @@
   display: block;
   z-index: 1;
 }
-
 .game-controllers button:first-child {
   margin-top: 0.2rem;
 }
-
 .game-controllers button:hover {
-  -webkit-box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
-          box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
 }
-
 .game-controllers button svg {
   width: 1.4rem;
   height: 1.4rem;
 }
-
-@-webkit-keyframes start-btn-anim {
-  0% {
-    background-color: #52eb52;
-  }
-  70% {
-    background-color: #51e89d;
-  }
-  90% {
-    background-color: #52eb52;
-  }
-}
-
 @keyframes start-btn-anim {
   0% {
     background-color: #52eb52;
@@ -513,21 +414,16 @@
     background-color: #52eb52;
   }
 }
-
 .game-controllers .start-button {
   background: #52eb52;
-  -webkit-animation: start-btn-anim 2s infinite;
-          animation: start-btn-anim 2s infinite;
+  animation: start-btn-anim 2s infinite;
 }
-
 .game-controllers .leave-button {
   background: #d85858;
 }
-
 .game-controllers .join-button {
   background: #3873f1;
 }
-
 .game-controllers .lobby-timeout {
   cursor: default;
   position: absolute;
@@ -536,23 +432,16 @@
   width: 3rem;
   height: 3rem;
   color: #225dc9;
-  -webkit-animation: lobby-timeout-color-change 5s infinite linear;
-          animation: lobby-timeout-color-change 5s infinite linear;
+  animation: lobby-timeout-color-change 5s infinite linear;
 }
-
 .game-controllers .lobby-timeout.lobby-active {
-  -webkit-animation: lobby-timeout-color-change 1.5s infinite linear;
-          animation: lobby-timeout-color-change 1.5s infinite linear;
+  animation: lobby-timeout-color-change 1.5s infinite linear;
 }
-
 .game-controllers .lobby-timeout.lobby-active svg {
-  -webkit-animation: lobby-timeout-sync-rotation 2s infinite linear;
-          animation: lobby-timeout-sync-rotation 2s infinite linear;
+  animation: lobby-timeout-sync-rotation 2s infinite linear;
 }
-
 .game-controllers .lobby-timeout.lobby-active .lobby-indicator {
-  -webkit-animation: lobby-timeout-color-change2 2.5s infinite linear;
-          animation: lobby-timeout-color-change2 2.5s infinite linear;
+  animation: lobby-timeout-color-change2 2.5s infinite linear;
   width: 3.6rem;
   height: 8.6rem;
   pointer-events: none;
@@ -565,7 +454,6 @@
   border-bottom-left-radius: 1.5rem;
   border-bottom-right-radius: 1rem;
 }
-
 .game-controllers .lobby-timeout svg {
   position: absolute;
   left: 0;
@@ -575,16 +463,10 @@
   margin: auto;
   width: 2.5rem;
   height: 2.5rem;
-  -webkit-animation: lobby-timeout-sync-rotation 7s infinite linear;
-          animation: lobby-timeout-sync-rotation 7s infinite linear;
+  animation: lobby-timeout-sync-rotation 7s infinite linear;
 }
-
 .game-controllers .lobby-timeout span {
-  height: -webkit-fit-content;
-  height: -moz-fit-content;
   height: fit-content;
-  width: -webkit-fit-content;
-  width: -moz-fit-content;
   width: fit-content;
   position: absolute;
   left: 0;
@@ -596,48 +478,17 @@
   font-weight: bold;
 }
 
-@-webkit-keyframes lobby-timeout-sync-rotation {
-  0% {
-    -webkit-transform: rotate(359deg) scale(1);
-            transform: rotate(359deg) scale(1);
-  }
-  50% {
-    -webkit-transform: rotate(180deg) scale(1.2);
-            transform: rotate(180deg) scale(1.2);
-  }
-  100% {
-    -webkit-transform: rotate(0deg) scale(1);
-            transform: rotate(0deg) scale(1);
-  }
-}
-
 @keyframes lobby-timeout-sync-rotation {
   0% {
-    -webkit-transform: rotate(359deg) scale(1);
-            transform: rotate(359deg) scale(1);
+    transform: rotate(359deg) scale(1);
   }
   50% {
-    -webkit-transform: rotate(180deg) scale(1.2);
-            transform: rotate(180deg) scale(1.2);
+    transform: rotate(180deg) scale(1.2);
   }
   100% {
-    -webkit-transform: rotate(0deg) scale(1);
-            transform: rotate(0deg) scale(1);
+    transform: rotate(0deg) scale(1);
   }
 }
-
-@-webkit-keyframes lobby-timeout-color-change {
-  0% {
-    color: #1d8ccc;
-  }
-  50% {
-    color: #34a8eb;
-  }
-  100% {
-    color: #1d8ccc;
-  }
-}
-
 @keyframes lobby-timeout-color-change {
   0% {
     color: #1d8ccc;
@@ -649,22 +500,6 @@
     color: #1d8ccc;
   }
 }
-
-@-webkit-keyframes lobby-timeout-color-change2 {
-  0% {
-    color: #01e9af;
-    border-color: #01e9af;
-  }
-  50% {
-    color: #00acfc;
-    border-color: #00acfc;
-  }
-  100% {
-    color: #01e9af;
-    border-color: #01e9af;
-  }
-}
-
 @keyframes lobby-timeout-color-change2 {
   0% {
     color: #01e9af;
@@ -679,34 +514,16 @@
     border-color: #01e9af;
   }
 }
-
-@-webkit-keyframes game-timeout-turn-rotation {
-  0% {
-    -webkit-transform: rotate(359deg) scale(1);
-            transform: rotate(359deg) scale(1);
-  }
-  50% {
-    -webkit-transform: rotate(180deg) scale(1.1);
-            transform: rotate(180deg) scale(1.1);
-  }
-  100% {
-    -webkit-transform: rotate(0deg) scale(1);
-            transform: rotate(0deg) scale(1);
-  }
-}
-
 @keyframes game-timeout-turn-rotation {
   0% {
-    -webkit-transform: rotate(359deg) scale(1);
-            transform: rotate(359deg) scale(1);
+    transform: rotate(359deg) scale(1);
   }
   50% {
-    -webkit-transform: rotate(180deg) scale(1.1);
-            transform: rotate(180deg) scale(1.1);
+    transform: rotate(180deg) scale(1.1);
   }
   100% {
-    -webkit-transform: rotate(0deg) scale(1);
-            transform: rotate(0deg) scale(1);
+    transform: rotate(0deg) scale(1);
   }
 }
+
 /*# sourceMappingURL=style.css.map */
