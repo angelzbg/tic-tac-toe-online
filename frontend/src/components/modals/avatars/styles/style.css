@@ -6,9 +6,12 @@
   height: 100vh;
   z-index: 9999;
   background-color: rgba(59, 89, 152, 0.2);
-  backdrop-filter: blur(2px);
-  animation: opacity-keyframe 0.1s ease-out;
+  -webkit-backdrop-filter: blur(2px);
+          backdrop-filter: blur(2px);
+  -webkit-animation: opacity-keyframe 0.1s ease-out;
+          animation: opacity-keyframe 0.1s ease-out;
 }
+
 .avatars-modal .avatar-modal-bgr-click {
   position: absolute;
   top: 0;
@@ -20,6 +23,7 @@
   height: 100%;
   background: transparent;
 }
+
 .avatars-modal .avatars-container {
   width: 98vw;
   background: #426696;
@@ -30,42 +34,53 @@
   margin-right: auto;
   top: calc((100vh - 5.5rem) / 2);
   border-radius: 0.25rem;
-  box-shadow: 10px 0 20px -20px #888;
+  -webkit-box-shadow: 10px 0 20px -20px #888;
+          box-shadow: 10px 0 20px -20px #888;
   overflow-x: auto;
 }
+
 @media only screen and (min-width: 575.98px) {
   .avatars-modal .avatars-container {
     width: 98vw;
   }
 }
+
 @media only screen and (min-width: 767.98px) {
   .avatars-modal .avatars-container {
     width: 95vw;
   }
 }
+
 @media only screen and (min-width: 991.98px) {
   .avatars-modal .avatars-container {
     width: 95vw;
   }
 }
+
 @media only screen and (min-width: 1199.98px) {
   .avatars-modal .avatars-container {
     width: 95vw;
   }
 }
+
 @media only screen and (min-width: 1439.98px) {
   .avatars-modal .avatars-container {
     width: 70vw;
   }
 }
+
 @media only screen and (min-width: 1919.98px) {
   .avatars-modal .avatars-container {
     width: 60vw;
   }
 }
+
 .avatars-modal .avatars-container .avatars-wrapper {
+  width: -webkit-max-content;
+  width: -moz-max-content;
   width: max-content;
 }
+
 .avatars-modal .avatars-container .avatars-wrapper .avatar {
   cursor: pointer;
   width: 4rem;
@@ -77,21 +92,25 @@
   border-radius: 50%;
   margin-left: 0.5rem;
 }
+
 .avatars-modal .avatars-container .avatars-wrapper .avatar:last-child {
   margin-right: 0.5rem;
 }
+
 .avatars-modal .avatars-container .avatars-wrapper .avatar:hover {
   opacity: 0.8;
 }
+
 .avatars-modal .avatars-container::-webkit-scrollbar {
   height: 0.5rem;
 }
+
 .avatars-modal .avatars-container::-webkit-scrollbar-thumb {
   background-color: #cbeeff;
   border-radius: 0.5rem;
 }
+
 .avatars-modal .avatars-container::-webkit-scrollbar-track {
   height: 0.5rem;
 }
-
 /*# sourceMappingURL=style.css.map */

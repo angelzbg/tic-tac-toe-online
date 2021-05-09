@@ -24,6 +24,8 @@ const socketInfo = {
 };
 
 // Tic Tac Toe [ START ]
+export const TTT_getLeaveToggle = () => JSON.parse(localStorage.getItem('3xT-save-toggle') ?? 'false');
+export const TTT_setLeaveToggle = (toggle = false) => localStorage.setItem('3xT-save-toggle', JSON.stringify(toggle));
 export const TTT_createGame = () => socket.emit('3xT-create-lobby');
 export const TTT_joinLobby = (gameId) => socket.emit('3xT-join-lobby', { gameId });
 export const TTT_leaveLobby = (gameId) => socket.emit('3xT-leave-lobby', { gameId });

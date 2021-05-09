@@ -1,5 +1,5 @@
 import './styles/style.css';
-import { CircleIcon, SyncIcon, XIcon } from '@primer/octicons-react';
+import { CircleIcon, RocketIcon, SignInIcon, SyncIcon, XIcon } from '@primer/octicons-react';
 import ReactMomentCountDown from 'react-moment-countdown';
 import { useSelector } from 'react-redux';
 import ActiveGame from './activegame';
@@ -9,8 +9,8 @@ import { TTT_createGame, TTT_joinLobby, TTT_subscribe, TTT_unsubscribe } from '.
 import { useEffect, useLayoutEffect, useState } from 'react';
 
 const symbols = {
-  X: () => <XIcon size="medium" />,
-  O: () => <CircleIcon size="big" />,
+  X: (props = {}) => XIcon({ ...props, size: 'medium' }),
+  O: (props = {}) => CircleIcon({ ...props, size: 'small' }),
 };
 
 const resizeMe = () => {
@@ -42,6 +42,12 @@ const TicTacToeGames = () => {
   const activeGame = auth.user ? tictactoe.games[tictactoe.activeGame] : null;
   const canCreate = !activeGame;
   const games = Object.values(tictactoe.games).sort((a, b) => b.created - a.created);
+  if (activeGame) {
+    const index = games.findIndex(({ gameId }) => gameId === activeGame.gameId);
+    if (index !== -1) {
+      games.splice(index, 1);
+    }
+  }
 
   useEffect(() => {
     TTT_subscribe();
@@ -71,44 +77,34 @@ const TicTacToeGames = () => {
           return (
             <div key={game.gameId} className="game-card">
               <div className="game-players">
-                {game.status === 'finished'
-                  ? Object.entries(game.playersStatistics).map(([playerId, player]) => (
-                      <div key={playerId} className="game-player">
-                        <img className="game-avatar" src={avatars[player.avatar]} alt="" />
-                        <div className="game-player-info">
-                          <div tooltip={player.username}>
-                            <p className="game-username">
-                              [{player.symbol}]{' '}
-                              {(({ username }) => (
-                                <span style={{ fontSize: `calc(0.99rem - (0.03rem * ${username.length}))` }}>
-                                  {username}
-                                </span>
-                              ))({ ...{ username: player.username } })}
-                            </p>
+                {Object.entries(game.status === 'finished' ? game.playersStatistics : game.players).map(
+                  ([playerId, player]) => (
+                    <div key={playerId} className="game-player">
+                      <div className="game-avatar">
+                        <img src={avatars[player.avatar]} alt="" />
+                        <div className={`avatar-symbol ${player.symbol}`}>{symbols[player.symbol]()}</div>
+                        {game.status === 'finished' && playerId === game.winnerId && (
+                          <div className="avatar-winner" tooltip="Winner">
+                            <RocketIcon size="medium" />
                           </div>
-                          {playerId === game.winnerId && <p>winner</p>}
+                        )}
+                      </div>
+                      <div className="game-player-info">
+                        <div tooltip={player.username}>
+                          <p className="game-username">
+                            {(({ username }) => (
+                              <span style={{ fontSize: `calc(1.11rem - (0.03rem * ${username.length}))` }}>
+                                {username}
+                              </span>
+                            ))({ ...{ username: player.username } })}
+                          </p>
                         </div>
                       </div>
-                    ))
-                  : Object.entries(game.players).map(([playerId, player]) => (
-                      <div key={playerId} className="game-player">
-                        <img className="game-avatar" src={avatars[player.avatar]} alt="" />
-                        <div className="game-player-info">
-                          <div tooltip={player.username}>
-                            <p className="game-username">
-                              [{player.symbol}]{' '}
-                              {(({ username }) => (
-                                <span style={{ fontSize: `calc(0.99rem - (0.03rem * ${username.length}))` }}>
-                                  {username}
-                                </span>
-                              ))({ ...{ username: player.username } })}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                    </div>
+                  )
+                )}
               </div>
-              <div className="board" style={{ transform: `rotate(${game.rotate}deg)` }}>
+              <div className="board" /*style={{ transform: `rotate(${game.rotate}deg)` }}*/>
                 {game.fields.map((row, i) => {
                   return row.map((field, j) => {
                     const isEmpty = field === 0;
@@ -126,12 +122,13 @@ const TicTacToeGames = () => {
                   <button
                     className="join-button"
                     onClick={() => (auth.user ? TTT_joinLobby(game.gameId) : history.push('/login'))}
+                    tooltip="Join"
                   >
-                    Join
+                    <SignInIcon size="medium" />
                   </button>
                 )}
                 {game.status === 'lobby' && (
-                  <div className="lobby-timeout">
+                  <div className="lobby-timeout" tooltip="Timeout">
                     <SyncIcon size="medium" />
                     <ReactMomentCountDown toDate={new Date(game.created + 600000)} targetFormatMask="m:ss" />
                   </div>
