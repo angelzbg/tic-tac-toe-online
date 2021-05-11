@@ -8,6 +8,9 @@ const jwt = require('jsonwebtoken');
 const uniqid = require('uniqid');
 const User = require('./models/User');
 
+const { activeSockets, identifySocket, unidentifySocket, ioAttachEmitListener } = require('./sockets');
+const TTT_attachMainListener = require('./sockets/tictactoe');
+
 const { SERVER_PORT, MONGO_CONNECTION_STRING, SECRET } = require('./utils/config');
 const { NETWORK_CODES, NETWORK_CODES_TYPES, respond } = require('./utils/constants');
 
@@ -20,10 +23,6 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'frontend/build')));
 app.use(cors());
-
-const timeouts = {};
-const tictactoe = {};
-const activeSockets = {};
 
 // ------------- Middlewares [ START ]
 
@@ -221,81 +220,6 @@ app.get('*', (_, res) => res.sendFile(path.join(__dirname + '/frontend/build/ind
 
 // ------------- React browser router extra support [  END  ]
 
-const check3xTFields = (fields = []) => {
-  for (let i = 0; i < 3; i++) {
-    const rowCheck = [...new Set(fields[i])];
-    if (rowCheck.length === 1 && rowCheck[0] !== 0) {
-      return { winner: rowCheck[0], path: i };
-    }
-
-    const colCheck = [...new Set(fields.reduce((col, row) => [...col, row[i]], []))];
-    if (colCheck.length === 1 && colCheck[0] !== 0) {
-      return { winner: colCheck[0], path: 3 + i };
-    }
-  }
-
-  const mainDiag = [...new Set([fields[0][0], fields[1][1], fields[2][2]])];
-  if (mainDiag.length === 1 && mainDiag[0] !== 0) {
-    return { winner: mainDiag[0], path: 6 };
-  }
-
-  const secDiag = [...new Set([fields[0][2], fields[1][1], fields[2][0]])];
-  if (secDiag.length === 1 && secDiag[0] !== 0) {
-    return { winner: secDiag[0], path: 7 };
-  }
-};
-
-const removeSocket = (socket, widthData) => {
-  const socketId = socket.data.socketId;
-  if (!socketId) return;
-
-  const index = activeSockets[socketId].sockets.findIndex(({ id }) => id === socket.id);
-  if (index !== -1) {
-    activeSockets[socketId].sockets.splice(index, 1);
-  }
-
-  if (!activeSockets[socketId].sockets.length) {
-    delete activeSockets[socketId];
-  }
-
-  if (widthData) {
-    socket.data = { attachedListeners: socket.data.attachedListeners };
-  }
-};
-
-const identifySocket = (socketId, socket) => {
-  if (!socketId) return;
-  if (socket.data.identifying || socket.data.socketId === socketId) return;
-  socket.data.identifying = true;
-
-  removeSocket(socket);
-
-  if (activeSockets[socketId]) {
-    socket.data.socketId = socketId;
-    activeSockets[socketId].sockets.push(socket);
-    socket.data.identifying = false;
-    socket.data.parent = activeSockets[socketId];
-    return;
-  }
-
-  (async (socketId, socket) => {
-    const user = await User.findOne({ socketId });
-    if (!user) return;
-    if (socket.disconnected) {
-      socket.data.identifying = false;
-      return;
-    }
-
-    user._id = user._id.toString();
-    activeSockets[socketId] = { user, sockets: [socket] };
-    socket.data.socketId = socketId;
-    socket.data.identifying = false;
-    socket.data.parent = activeSockets[socketId];
-  })(socketId, socket);
-};
-
-const unidentifySocket = (socket) => removeSocket(socket, true);
-
 mongoose
   .connect(MONGO_CONNECTION_STRING, {
     useNewUrlParser: true,
@@ -304,196 +228,14 @@ mongoose
     useFindAndModify: false,
   })
   .then(() => {
+    ioAttachEmitListener(io);
+
     io.on('connection', (socket) => {
-      socket.data.attachedListeners = [];
       socket.on('identify', (socketId) => identifySocket(socketId, socket));
       socket.on('unidentify', () => unidentifySocket(socket));
+      socket.on('disconnecting', () => unidentifySocket(socket));
 
-      socket.on('3xT-subscribe', () => {
-        socket.emit('3xT-received-games', tictactoe);
-
-        const { attachedListeners } = socket.data;
-        if (attachedListeners.includes('3xT-subscribe')) return;
-        attachedListeners.push('3xT-subscribe');
-
-        socket.on('3xT-create-lobby', () => {
-          const user = socket.data?.parent?.user;
-          if (!user) return;
-
-          for (let game of Object.values(tictactoe)) {
-            if (user._id in game.players) {
-              return;
-            }
-          }
-
-          const gameId = uniqid();
-          tictactoe[gameId] = {
-            gameId,
-            status: 'lobby',
-            turn: user._id,
-            created: new Date().getTime(),
-            rotate: Math.ceil(Math.random() * 5) * (Math.round(Math.random()) ? 1 : -1),
-            players: {
-              [user._id]: {
-                _id: user._id,
-                username: user.username,
-                rate: user.rate,
-                avatar: user.avatar,
-                symbol: 'X',
-              },
-            },
-            fields: [
-              [0, 0, 0],
-              [0, 0, 0],
-              [0, 0, 0],
-            ],
-          };
-
-          io.emit('3xT-created-lobby', tictactoe[gameId]);
-
-          timeouts[gameId] = setTimeout(() => {
-            delete tictactoe[gameId];
-            io.emit('3xT-game-deleted', gameId);
-            delete timeouts[gameId];
-          }, 10 * 60000);
-        });
-
-        socket.on('3xT-join-lobby', ({ gameId } = {}) => {
-          if (!gameId) return;
-          const user = socket.data?.parent?.user;
-          if (!user) return;
-
-          for (let game of Object.values(tictactoe)) {
-            if (user._id in game.players) {
-              return;
-            }
-          }
-
-          const game = tictactoe[gameId];
-          if (!game || game.status !== 'lobby' || Object.keys(game.players).length >= 2) {
-            return;
-          }
-
-          tictactoe[gameId].players[user._id] = {
-            _id: user._id,
-            username: user.username,
-            rate: user.rate,
-            avatar: user.avatar,
-            symbol: 'O',
-          };
-
-          io.emit('3xT-player-joined', { joinedUser: tictactoe[gameId].players[user._id], gameId });
-        });
-
-        socket.on('3xT-leave-lobby', ({ gameId } = {}) => {
-          if (!gameId) return;
-          const user = socket.data?.parent?.user;
-          if (!user) return;
-
-          let game = tictactoe[gameId];
-          if (!game || !game.players[user._id] || game.status === 'progress') {
-            return;
-          }
-
-          if (game.players[user._id].symbol === 'X' && game.status === 'lobby') {
-            delete tictactoe[gameId];
-            io.emit('3xT-game-deleted', gameId);
-            clearTimeout(timeouts[gameId]);
-            delete timeouts[gameId];
-            return;
-          }
-
-          delete tictactoe[gameId].players[user._id];
-          io.emit('3xT-player-leave', { userId: user._id, gameId });
-        });
-
-        socket.on('3xT-start-game', (gameId) => {
-          if (!gameId) return;
-          const user = socket.data?.parent?.user;
-          if (!user) return;
-          const game = tictactoe[gameId];
-          if (!game) return;
-          if (!game.players[user._id]) return;
-          if (game.players[user._id].symbol !== 'X') return;
-          if (game.status !== 'lobby') return;
-          if (Object.keys(game.players).length !== 2) return;
-          clearTimeout(timeouts[gameId]);
-          game.status = 'progress';
-          game.turnDate = new Date().getTime() + 20000;
-          const OPlayerId = Object.values(game.players).find((p) => p._id !== user._id)._id;
-          io.emit('3xT-game-started', { gameId, status: game.status, turnDate: game.turnDate });
-          timeouts[gameId] = setTimeout(() => {
-            game.status = 'finished';
-            game.playersStatistics = { ...game.players };
-            game.winnerId = OPlayerId;
-            io.emit('3xT-game-finished', game);
-
-            timeouts[gameId] = setTimeout(() => {
-              io.emit('3xT-game-deleted', gameId);
-              delete tictactoe[gameId];
-              delete timeouts[gameId];
-            }, 60000);
-          }, 20000);
-        });
-
-        socket.on('3xT-make-turn', ({ gameId, i, j } = {}) => {
-          if (!gameId) return;
-          const user = socket.data?.parent?.user;
-          if (!user) return;
-          const game = tictactoe[gameId];
-          if (!game) return;
-          if (game.status !== 'progress') return;
-          if (game.turn !== user._id) return;
-          if (game.fields[i][j] !== 0) return;
-          clearTimeout(timeouts[gameId]);
-          game.fields[i][j] = game.players[user._id].symbol;
-          const result = check3xTFields(game.fields);
-          if (result) {
-            game.status = 'finished';
-            game.playersStatistics = { ...game.players };
-            game.winnerId = user._id;
-            game.path = result.path;
-            io.emit('3xT-game-finished', game);
-
-            timeouts[gameId] = setTimeout(() => {
-              io.emit('3xT-game-deleted', gameId);
-              delete tictactoe[gameId];
-              delete timeouts[gameId];
-            }, 60000);
-            return;
-          }
-
-          if (!game.fields.reduce((acc, row) => [...acc, ...row.filter((el) => el === 0)], []).length) {
-            game.status = 'finished';
-            game.playersStatistics = { ...game.players };
-            io.emit('3xT-game-finished', game);
-            timeouts[gameId] = setTimeout(() => {
-              io.emit('3xT-game-deleted', gameId);
-              delete tictactoe[gameId];
-              delete timeouts[gameId];
-            }, 60000);
-            return;
-          }
-
-          game.turn = Object.values(game.players).find((p) => p._id !== user._id)._id;
-          game.turnDate = new Date().getTime() + 20000;
-          io.emit('3xT-player-turn', { gameId, fields: game.fields, turn: game.turn, turnDate: game.turnDate });
-          timeouts[gameId] = setTimeout(() => {
-            game.status = 'finished';
-            game.playersStatistics = { ...game.players };
-            game.winnerId = user._id;
-            io.emit('3xT-game-finished', game);
-
-            timeouts[gameId] = setTimeout(() => {
-              io.emit('3xT-game-deleted', gameId);
-              delete tictactoe[gameId];
-              delete timeouts[gameId];
-            }, 60000);
-          }, 20000);
-        });
-
-        socket.on('disconnecting', () => unidentifySocket(socket));
-      });
+      TTT_attachMainListener(socket);
     });
 
     http.listen(SERVER_PORT, console.log('Server started'));
